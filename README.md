@@ -3,11 +3,30 @@
 ระบบเว็บไซต์นำเสนอข่าวสาร + รับสมัครส่งประกวดวิดีโอ (พร้อมระบบจัดเก็บไฟล์ Object Storage และฐานข้อมูล PostgreSQL)
 
 Stack:
-- **Frontend**: React (Port `9000`)
+- **Frontend**: React (Port `9000`) — **Responsive Design** รองรับทุกขนาดหน้าจอ (Mobile / Tablet / Desktop)
 - **Backend**: Node.js / Express (Port `9100`)
 - **Database**: PostgreSQL 16 (Port `5432`)
 - **Object Storage**: S3-Compatible Storage (สำหรับจัดเก็บไฟล์/วิดีโอ/เอกสาร)
 - **Containerization**: Docker Compose
+
+---
+
+## Responsive Design
+
+เว็บไซต์ถูกออกแบบด้วยแนวทาง **Mobile-First Responsive Design** รองรับการแสดงผลบนทุกอุปกรณ์:
+
+| ขนาดหน้าจอ | Breakpoint | รายละเอียด |
+|-------------|------------|-------------|
+| **Mobile** | `< 768px` | สมาร์ทโฟน — Layout คอลัมน์เดียว, Hamburger menu |
+| **Tablet** | `768px – 1023px` | แท็บเล็ต — Layout 2 คอลัมน์ |
+| **Desktop** | `≥ 1024px` | คอมพิวเตอร์ — Layout เต็มรูปแบบ 3 คอลัมน์ |
+
+คุณสมบัติ Responsive ที่สำคัญ:
+- **Mobile-First CSS** — เขียน CSS base สำหรับ mobile แล้วขยายด้วย `@media (min-width: ...)`
+- **Flexible Grid** — News cards และ content ปรับจำนวนคอลัมน์ตามขนาดหน้าจอ
+- **Touch-Friendly** — ปุ่มและ form inputs มีขนาดเหมาะสมสำหรับการใช้งานบนมือถือ (min-height `44px`)
+- **Responsive Images** — รูปภาพปรับขนาดตามหน้าจออัตโนมัติ
+- **Adaptive Navigation** — Navbar แสดง hamburger menu บนหน้าจอเล็ก
 
 ---
 
