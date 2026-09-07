@@ -1,46 +1,85 @@
+/* การ์ดบทความ/ข่าว — Figma: การ์ดพื้นครีมมุมมน 35px */
+
 .news-card {
-  display: block;
-  background: #ffffff;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 24px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
 .news-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.news-card-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #e6e3da;
+  overflow: hidden;
 }
 
 .news-card-image {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
-  display: block;
+}
+
+.news-card-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(95, 94, 90, 0.45);
 }
 
 .news-card-body {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: clamp(1.125rem, 1rem + 1vw, 1.75rem);
+  flex-grow: 1;
 }
 
 .news-card-date {
-  font-size: 0.8rem;
-  color: #64748b;
+  font-size: var(--text-xs);
   font-weight: 500;
+  color: var(--color-blue);
 }
 
 .news-card-title {
-  margin: 8px 0;
-  font-size: 1.15rem;
-  color: #0f172a;
+  font-size: var(--text-lg);
+  font-weight: 600;
   line-height: 1.4;
+  color: var(--color-ink);
+  margin: 0;
 }
 
 .news-card-summary {
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  color: var(--color-gray);
   margin: 0;
-  font-size: 0.925rem;
-  color: #475569;
-  line-height: 1.6;
+}
+
+.news-card-more {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-red);
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 768px) {
+  .news-card-media { aspect-ratio: 16 / 9; }
+}
+
+/* ---- Desktop ---- */
+@media (min-width: 1024px) {
+  .news-card-media { aspect-ratio: 3 / 2; }
 }

@@ -1,0 +1,69 @@
+/* บล็อกรูป + ข้อความสลับข้าง — Figma: รูป r=30, หัวข้อแดง 32px, เนื้อหาจัดกึ่งกลาง */
+
+.split-block {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 0.8rem + 1.5vw, 2.5rem);
+  align-items: center;
+  margin-bottom: clamp(2rem, 1.5rem + 3vw, 4.5rem);
+}
+
+.split-block:last-child {
+  margin-bottom: 0;
+}
+
+.split-block-media img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-img);
+  box-shadow: var(--shadow-sm);
+}
+
+.split-block-content {
+  text-align: center;
+}
+
+.split-block-title {
+  font-size: var(--text-xl);
+  font-weight: 500;
+  color: var(--color-red);
+  margin-bottom: 0.75rem;
+  line-height: 1.35;
+}
+
+.split-block-description {
+  font-size: var(--text-base);
+  line-height: 1.65;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 768px) {
+  .split-block {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+    gap: clamp(1.5rem, 1rem + 3vw, 3.5rem);
+  }
+
+  .split-block.is-reverse .split-block-media {
+    order: 2;
+  }
+
+  .split-block.is-reverse .split-block-content {
+    order: 1;
+  }
+
+  .split-block-media img {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+/* ---- Desktop ---- */
+@media (min-width: 1024px) {
+  .split-block {
+    grid-template-columns: minmax(0, 23.6875rem) minmax(0, 1fr);
+    margin-bottom: 5rem;
+  }
+}

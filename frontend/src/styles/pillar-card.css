@@ -1,0 +1,55 @@
+/* การ์ดแนวทางการดำเนินงาน — Figma: พื้นครีม หัวข้อสีแดงกลางการ์ด */
+
+.pillar-card {
+  display: flex;
+  min-height: 12rem;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.pillar-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.pillar-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  text-align: center;
+  width: 100%;
+}
+
+.pillar-card-title {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-red);
+  margin: 0;
+}
+
+.pillar-card-subtitle {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-blue);
+  margin: 0 0 0.5rem;
+}
+
+.pillar-card-description {
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--color-gray);
+  margin: 0;
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 768px) {
+  .pillar-card { min-height: 14rem; }
+}
+
+/* ---- Desktop ---- */
+@media (min-width: 1024px) {
+  .pillar-card { min-height: 21.4375rem; }
+}

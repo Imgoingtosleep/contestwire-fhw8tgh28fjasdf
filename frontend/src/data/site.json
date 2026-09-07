@@ -1,0 +1,13 @@
+{
+  "company": "บริษัท โตโยต้า มอเตอร์ ประเทศไทย จำกัด",
+  "address": "186/1 หมู่ 1 ถนนทางรถไฟเก่า ตำบลสำโรงใต้\nอำเภอพระประแดง จังหวัดสมุทรปราการ 10130",
+  "phone": "02-386-2000",
+  "callCenter": "Call Center 1486",
+  "email": "contact-us@toyota.co.th",
+  "social": [
+    { "id": "facebook", "label": "Facebook", "url": "https://www.facebook.com/" },
+    { "id": "instagram", "label": "Instagram", "url": "https://www.instagram.com/" },
+    { "id": "tiktok", "label": "TikTok", "url": "https://www.tiktok.com/" },
+    { "id": "youtube", "label": "YouTube", "url": "https://www.youtube.com/" }
+  ]
+}

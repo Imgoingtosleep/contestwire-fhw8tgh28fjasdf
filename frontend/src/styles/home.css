@@ -1,62 +1,71 @@
-.hero-section {
-  text-align: center;
-  padding: 48px 0;
-  max-width: 720px;
-  margin: 0 auto 32px;
+/* หน้าแรก — Figma frame "home" */
+
+.home-video-section {
+  padding-top: 0;
 }
 
-.hero-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 12px;
-  letter-spacing: -0.02em;
+.home-video {
+  max-width: 63.1875rem; /* Figma 1011px */
+  margin: 0 auto;
 }
 
-.hero-subtitle {
-  font-size: 1.1rem;
-  color: #64748b;
-  margin-bottom: 24px;
-  line-height: 1.6;
+.home-video-link {
+  position: relative;
+  display: block;
+  border-radius: var(--radius-img);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.hero-cta {
-  display: inline-block;
-  background: #2563eb;
-  color: #ffffff;
-  font-weight: 600;
-  padding: 12px 28px;
-  border-radius: 8px;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+.home-video-link:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
-.hero-cta:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
+.home-video-thumb {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
-.news-section {
-  margin-top: 16px;
-}
-
-.news-section-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 20px;
-}
-
-.view-all-link {
-  display: inline-flex;
+.home-video-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
   align-items: center;
-  gap: 6px;
-  color: #2563eb;
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin-top: 8px;
-  transition: gap 0.2s ease;
+  justify-content: center;
+  width: clamp(3.5rem, 2.5rem + 4vw, 5.5rem);
+  height: clamp(2.5rem, 1.8rem + 2.8vw, 3.875rem);
+  border-radius: 1rem;
+  background: var(--color-red);
+  color: var(--color-white);
+  transition: background-color var(--transition), transform var(--transition);
 }
 
-.view-all-link:hover {
-  gap: 10px;
+.home-video-link:hover .home-video-play {
+  background: var(--color-red-dark);
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.home-video-play svg {
+  width: 45%;
+  height: auto;
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 768px) {
+  .home-video-play {
+    border-radius: 1.25rem;
+  }
+}
+
+/* ---- Desktop ---- */
+@media (min-width: 1024px) {
+  .home-video-section {
+    padding-top: 0;
+  }
 }

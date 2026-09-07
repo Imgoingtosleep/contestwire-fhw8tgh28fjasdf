@@ -1,11 +1,145 @@
+/* Footer — Figma "Footer" (PARTNERS บนพื้น #F9F8F8 + แถบล่างพื้นไล่สีฟ้าอ่อน) */
+
 .footer {
-  background: #0f172a;
-  color: #94a3b8;
-  padding: 32px 0;
-  margin-top: 64px;
+  margin-top: auto;
 }
 
-.footer-inner {
-  font-size: 0.875rem;
+/* ---- PARTNERS ---- */
+
+.footer-partners {
+  background: var(--color-offwhite);
+  padding: clamp(2rem, 1.5rem + 2vw, 3rem) 0;
   text-align: center;
+}
+
+.footer-partners-title {
+  font-size: var(--text-xl);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-ink);
+  margin-bottom: clamp(1.25rem, 1rem + 1vw, 2rem);
+}
+
+.footer-partners-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 1rem + 3vw, 2.75rem);
+}
+
+.footer-partners-list img {
+  height: clamp(3.5rem, 2.5rem + 3vw, 8rem);
+  width: auto;
+  object-fit: contain;
+}
+
+/* ---- แถบล่าง ---- */
+
+.footer-main {
+  background: linear-gradient(180deg, #eaf6fd 0%, #d7eefb 100%);
+  padding: clamp(2rem, 1.5rem + 3vw, 3.75rem) 0;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.footer-logo {
+  width: clamp(10rem, 8rem + 8vw, 16.6875rem);
+  height: auto;
+  margin-bottom: 1.25rem;
+}
+
+.footer-company,
+.footer-address {
+  font-size: var(--text-xs);
+  line-height: 1.7;
+  color: var(--color-gray);
+  margin-bottom: 0.75rem;
+  white-space: pre-line;
+}
+
+.footer-address {
+  margin-bottom: 0;
+}
+
+.footer-contact-title {
+  font-size: var(--text-base);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-gray);
+  margin-bottom: 1.25rem;
+}
+
+.footer-contact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-gray);
+  margin-bottom: 1.25rem;
+}
+
+.footer-contact-row a {
+  color: inherit;
+}
+
+.footer-contact-row a:hover {
+  color: var(--color-blue);
+  text-decoration: underline;
+}
+
+.footer-contact-icon {
+  width: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  height: auto;
+  flex-shrink: 0;
+  color: var(--color-gray);
+}
+
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: 50%;
+  color: var(--color-gray);
+  transition: color var(--transition), background-color var(--transition);
+}
+
+.footer-social a:hover {
+  color: var(--color-blue);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.footer-social-icon {
+  width: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  height: auto;
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
+/* ---- Desktop ---- */
+@media (min-width: 1024px) {
+  .footer-grid {
+    grid-template-columns: 1.1fr 1fr;
+    gap: 5rem;
+  }
 }

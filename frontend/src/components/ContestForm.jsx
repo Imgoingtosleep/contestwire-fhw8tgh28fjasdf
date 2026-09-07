@@ -35,7 +35,7 @@ export default function ContestForm() {
     setLoading(true);
     setStatus({ type: "", message: "" });
 
-    // Validate that either video link or file is provided
+    // ต้องมีลิงก์วิดีโอ หรือไฟล์ผลงานอย่างน้อยหนึ่งอย่าง
     if (!form.videoUrl && !file) {
       setStatus({
         type: "error",
@@ -55,9 +55,7 @@ export default function ContestForm() {
       }
 
       await api.post("/contest/submit", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       setStatus({
@@ -79,35 +77,39 @@ export default function ContestForm() {
 
   return (
     <form onSubmit={handleSubmit} className="contest-form">
+      <div className="form-grid">
+        <Field
+          label="ชื่อ-นามสกุล"
+          name="fullName"
+          value={form.fullName}
+          onChange={handleChange}
+          required
+        />
+        <Field
+          label="อีเมล"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          required
+        />
+        <Field
+          label="เบอร์โทรศัพท์"
+          name="phone"
+          type="tel"
+          value={form.phone}
+          onChange={handleChange}
+        />
+        <Field
+          label="ชื่อทีม / สังกัด"
+          name="teamName"
+          value={form.teamName}
+          onChange={handleChange}
+        />
+      </div>
+
       <Field
-        label="ชื่อ-นามสกุล *"
-        name="fullName"
-        value={form.fullName}
-        onChange={handleChange}
-        required
-      />
-      <Field
-        label="อีเมล *"
-        name="email"
-        type="email"
-        value={form.email}
-        onChange={handleChange}
-        required
-      />
-      <Field
-        label="เบอร์โทร"
-        name="phone"
-        value={form.phone}
-        onChange={handleChange}
-      />
-      <Field
-        label="ชื่อทีม / สังกัด"
-        name="teamName"
-        value={form.teamName}
-        onChange={handleChange}
-      />
-      <Field
-        label="ชื่อผลงานวิดีโอ *"
+        label="ชื่อผลงานวิดีโอ"
         name="videoTitle"
         value={form.videoTitle}
         onChange={handleChange}
@@ -117,14 +119,15 @@ export default function ContestForm() {
       <Field
         label="ลิงก์วิดีโอ (YouTube / Google Drive / Vimeo)"
         name="videoUrl"
+        type="url"
         placeholder="https://..."
         value={form.videoUrl}
         onChange={handleChange}
       />
 
       <div className="form-field">
-        <label className="form-label">
-          หรือแนบไฟล์ผลงาน / โปสเตอร์ / วิดีโอ (อัปโหลดไฟล์)
+        <label className="form-label" htmlFor="file-upload">
+          หรือแนบไฟล์ผลงาน (วิดีโอ / โปสเตอร์)
         </label>
         <input
           id="file-upload"
@@ -140,8 +143,11 @@ export default function ContestForm() {
       </div>
 
       <div className="form-field">
-        <label className="form-label">รายละเอียดผลงาน / แนวคิด</label>
+        <label className="form-label" htmlFor="description">
+          รายละเอียดผลงาน / แนวคิด
+        </label>
         <textarea
+          id="description"
           name="description"
           value={form.description}
           onChange={handleChange}
@@ -153,26 +159,42 @@ export default function ContestForm() {
 
       {status.message && (
         <div
-          className={`form-alert ${
-            status.type === "success" ? "form-alert-success" : "form-alert-error"
-          }`}
+          className={
+            status.type === "success"
+              ? "form-alert form-alert-success"
+              : "form-alert form-alert-error"
+          }
+          role="status"
         >
           {status.message}
         </div>
       )}
 
-      <button type="submit" disabled={loading} className="form-btn-submit">
+      <button
+        type="submit"
+        disabled={loading}
+        className="btn btn-primary btn-block form-submit"
+      >
         {loading ? "กำลังบันทึกข้อมูล..." : "ส่งผลงานเข้าประกวด"}
       </button>
     </form>
   );
 }
 
-function Field({ label, ...props }) {
+function Field({ label, name, required, ...props }) {
   return (
     <div className="form-field">
-      <label className="form-label">{label}</label>
-      <input {...props} className="form-input" />
+      <label className="form-label" htmlFor={name}>
+        {label}
+        {required && <span className="form-required"> *</span>}
+      </label>
+      <input
+        id={name}
+        name={name}
+        required={required}
+        {...props}
+        className="form-input"
+      />
     </div>
   );
 }

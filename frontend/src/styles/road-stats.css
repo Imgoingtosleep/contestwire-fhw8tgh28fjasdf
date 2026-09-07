@@ -1,0 +1,369 @@
+/* Interactive Statistics — กราฟิกถนน + hover/tap pop-up + ตัวเลขวิ่ง */
+
+.road-stats {
+  background: var(--color-white);
+}
+
+/* ---- สถิติรวมด้านบน ---- */
+
+.road-stats-headline-label {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-gray);
+  margin-bottom: 0.25rem;
+}
+
+.road-stats-headline-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.375rem;
+  margin: 0 0 0.5rem;
+}
+
+.road-stats-headline-number {
+  font-size: var(--text-4xl);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-red);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.road-stats-headline-suffix {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.road-stats-headline-note {
+  font-size: var(--text-xs);
+  color: var(--color-gray);
+  margin: 0;
+}
+
+/* ---- Visual cue บอกให้ผู้ใช้โต้ตอบ ---- */
+
+.road-stats-cue {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: var(--text-sm);
+  color: var(--color-gray);
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+.road-stats-cue-dot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-red);
+  animation: road-cue-blink 1.6s ease-in-out infinite;
+}
+
+@keyframes road-cue-blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+
+/* ---- กราฟิกถนน ---- */
+
+.road-map {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-img);
+  overflow: hidden;
+  background: var(--color-cream);
+  box-shadow: var(--shadow-sm);
+}
+
+.road-map-svg {
+  display: block;
+  width: 100%;
+  height: clamp(15rem, 42vw, 28rem);
+}
+
+.road-hotspots {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ไม่ใส่ transform ที่ตัว li เพราะจะทำให้ pop-up แบบ position: fixed
+   บนมือถือยึดกับ li แทน viewport — ย้ายไปจัดกึ่งกลางที่ปุ่มแทน */
+.road-hotspot {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* ตำแหน่งของแต่ละจุด (แยกจากข้อมูลใน stats.json) */
+.road-hotspot-school-zone { left: 15%; top: 84%; }
+.road-hotspot-crosswalk   { left: 39%; top: 71%; }
+.road-hotspot-helmet      { left: 62%; top: 62%; }
+.road-hotspot-youth-camp  { left: 84%; top: 52%; }
+
+.road-hotspot-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--touch-min);
+  min-width: var(--touch-min);
+  padding: 0.375rem 0.75rem;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-md);
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  transition: transform var(--transition), background-color var(--transition);
+}
+
+.road-hotspot-btn:hover,
+.road-hotspot.is-active .road-hotspot-btn {
+  background: var(--color-red);
+  color: #fff;
+  transform: translate(-50%, -50%) scale(1.06);
+}
+
+.road-hotspot-pulse {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--color-red);
+  box-shadow: 0 0 0 3px rgba(224, 18, 42, 0.25);
+}
+
+.road-hotspot.is-active .road-hotspot-pulse,
+.road-hotspot-btn:hover .road-hotspot-pulse {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4);
+}
+
+.road-hotspot-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--color-red);
+  animation: road-pulse 1.8s ease-out infinite;
+}
+
+.road-hotspot.is-active .road-hotspot-pulse::after,
+.road-hotspot-btn:hover .road-hotspot-pulse::after {
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+@keyframes road-pulse {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ซ่อนป้ายชื่อบนจอเล็ก เหลือเฉพาะจุดกระพริบ */
+.road-hotspot-label {
+  display: none;
+}
+
+/* ---- Pop-up (mobile: bottom sheet เต็มความกว้าง) ---- */
+
+.road-popup {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 150;
+  padding: 1.5rem 1.25rem 2rem;
+  background: var(--color-white);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  box-shadow: var(--shadow-lg);
+  text-align: left;
+  animation: road-popup-up 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes road-popup-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.road-popup-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: none;
+  background: transparent;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--color-gray);
+  cursor: pointer;
+}
+
+.road-popup-unit {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-red);
+  margin-bottom: 0.25rem;
+}
+
+.road-popup-value {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.5rem;
+}
+
+.road-popup-suffix {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-gray);
+}
+
+.road-popup-title {
+  font-size: var(--text-lg);
+  margin-bottom: 0.375rem;
+}
+
+.road-popup-desc {
+  font-size: var(--text-sm);
+  color: var(--color-gray);
+  margin: 0;
+}
+
+/* ---- สรุปตัวเลขทุกจุด ---- */
+
+.road-stats-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.road-stats-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  background: var(--color-offwhite);
+  border-radius: var(--radius-img);
+  border-left: 3px solid var(--color-red);
+}
+
+.road-stats-summary-value {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.road-stats-summary-value small {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-gray);
+}
+
+.road-stats-summary-title {
+  font-size: var(--text-xs);
+  color: var(--color-gray);
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 768px) {
+  .road-hotspot-label {
+    display: inline;
+    white-space: nowrap;
+  }
+
+  .road-hotspot-btn {
+    font-size: var(--text-sm);
+    padding: 0.5rem 1rem;
+  }
+
+  .road-stats-summary {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .road-stats-cue {
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* ---- Desktop: pop-up ลอยเหนือจุดที่ชี้ ---- */
+@media (min-width: 1024px) {
+  .road-popup {
+    position: absolute;
+    left: 50%;
+    right: auto;
+    bottom: 2.25rem;
+    width: 22rem;
+    max-width: 90vw;
+    transform: translateX(-50%);
+    border-radius: var(--radius-img);
+    padding: 1.5rem;
+    /* บน desktop ใช้ fade อย่างเดียว เพื่อไม่ให้ทับ transform ที่ใช้จัดกึ่งกลาง */
+    animation: road-popup-fade 0.3s ease;
+  }
+
+  @keyframes road-popup-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .road-popup::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border: 8px solid transparent;
+    border-top-color: var(--color-white);
+  }
+
+  /* กันไม่ให้ pop-up ล้นขอบซ้าย/ขวา */
+  .road-hotspot-school-zone .road-popup {
+    left: 0;
+    transform: none;
+  }
+
+  .road-hotspot-school-zone .road-popup::after {
+    left: 2rem;
+  }
+
+  .road-hotspot-youth-camp .road-popup {
+    left: auto;
+    right: 0;
+    transform: none;
+  }
+
+  .road-hotspot-youth-camp .road-popup::after {
+    left: auto;
+    right: 2rem;
+  }
+
+  .road-popup-close {
+    display: none;
+  }
+}
