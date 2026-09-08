@@ -9,19 +9,26 @@ function formatNumber(n) {
 }
 
 /** ตัวเลขวิ่งของสถิติรวมด้านบน */
-function HeadlineCounter({ value, suffix, active }) {
-  const current = useCountUp(value, active, 2000);
+function HeadlineCounter({ value, countFrom, suffix, baseline, active }) {
+  const [current, done] = useCountUp(value, active, 2400, countFrom);
   return (
     <p className="road-stats-headline-value">
-      <span className="road-stats-headline-number">{formatNumber(current)}</span>
+      <span
+        className={`road-stats-headline-number${done ? " is-count-done" : ""}`}
+      >
+        {formatNumber(current)}
+      </span>
       <span className="road-stats-headline-suffix">{suffix}</span>
+      {baseline && (
+        <span className="road-stats-headline-baseline">{baseline}</span>
+      )}
     </p>
   );
 }
 
 /** Pop-up สถิติของแต่ละจุดบนถนน (นับเลขใหม่ทุกครั้งที่เปิด) */
 function HotspotPopup({ item, onClose }) {
-  const current = useCountUp(item.value, true, 1400);
+  const [current, done] = useCountUp(item.value, true, 1800, item.countFrom);
 
   return (
     <div className="road-popup" role="dialog" aria-label={item.title}>
@@ -34,10 +41,11 @@ function HotspotPopup({ item, onClose }) {
         &times;
       </button>
       <p className="road-popup-unit">{item.unit}</p>
-      <p className="road-popup-value">
+      <p className={`road-popup-value${done ? " is-count-done" : ""}`}>
         {formatNumber(current)}
         <span className="road-popup-suffix">{item.suffix}</span>
       </p>
+      {item.baseline && <p className="road-popup-baseline">{item.baseline}</p>}
       <h3 className="road-popup-title">{item.title}</h3>
       <p className="road-popup-desc">{item.description}</p>
     </div>
@@ -77,7 +85,9 @@ export default function RoadStats() {
           <p className="road-stats-headline-label">{headline.label}</p>
           <HeadlineCounter
             value={headline.value}
+            countFrom={headline.countFrom}
             suffix={headline.suffix}
+            baseline={headline.baseline}
             active={inView}
           />
           <p className="road-stats-headline-note">{headline.note}</p>
@@ -185,8 +195,16 @@ export default function RoadStats() {
         <ul className="road-stats-summary">
           {hotspots.map((item) => (
             <li key={item.id} className="road-stats-summary-item">
-              <SummaryValue value={item.value} suffix={item.suffix} active={inView} />
+              <SummaryValue
+                value={item.value}
+                countFrom={item.countFrom}
+                suffix={item.suffix}
+                active={inView}
+              />
               <span className="road-stats-summary-title">{item.title}</span>
+              {item.baseline && (
+                <span className="road-stats-summary-baseline">{item.baseline}</span>
+              )}
             </li>
           ))}
         </ul>
@@ -195,10 +213,10 @@ export default function RoadStats() {
   );
 }
 
-function SummaryValue({ value, suffix, active }) {
-  const current = useCountUp(value, active, 1800);
+function SummaryValue({ value, countFrom, suffix, active }) {
+  const [current, done] = useCountUp(value, active, 2200, countFrom);
   return (
-    <span className="road-stats-summary-value">
+    <span className={`road-stats-summary-value${done ? " is-count-done" : ""}`}>
       {formatNumber(current)}
       <small>{suffix}</small>
     </span>

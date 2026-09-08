@@ -52,6 +52,9 @@ services:
       - R2_BUCKET_NAME=${R2_BUCKET_NAME}
       - R2_PUBLIC_URL=${R2_PUBLIC_URL}
       - NODE_ENV=${NODE_ENV}
+      # hot reload: nodemon ใช้ chokidar — ต้อง poll เมื่อ bind mount ข้ามระบบไฟล์
+      - CHOKIDAR_USEPOLLING=${WATCH_POLLING}
+      - CHOKIDAR_INTERVAL=${WATCH_INTERVAL}
     ports:
       - "${BACKEND_PORT}:${PORT}"
     volumes:
@@ -76,6 +79,13 @@ services:
       - PORT=${FRONTEND_PORT}
       - REACT_APP_API_URL=${REACT_APP_API_URL}
       - REACT_APP_SITE_NAME=${REACT_APP_SITE_NAME}
+      # hot reload: webpack-dev-server (CRA 5) — WATCHPACK สำหรับ webpack, CHOKIDAR สำหรับ dev server
+      - WATCHPACK_POLLING=${WATCH_POLLING}
+      - CHOKIDAR_USEPOLLING=${WATCH_POLLING}
+      - CHOKIDAR_INTERVAL=${WATCH_INTERVAL}
+      - FAST_REFRESH=true
+      # พอร์ตของ HMR websocket ต้องตรงกับพอร์ตที่ map ออกมา ไม่งั้นเบราว์เซอร์ต่อไม่ติด
+      - WDS_SOCKET_PORT=${FRONTEND_PORT}
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     volumes:

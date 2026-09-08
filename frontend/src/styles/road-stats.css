@@ -216,10 +216,13 @@
 .road-popup-unit {
   font-size: var(--text-xs);
   font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  /* ภาษาไทยไม่ต้องการ letter-spacing มาก — ยิ่งกว้างยิ่งเสี่ยงล้นกรอบ */
+  letter-spacing: 0.04em;
+  line-height: 1.4;
   color: var(--color-red);
   margin-bottom: 0.25rem;
+  /* กันข้อความมุดใต้ปุ่มปิดที่ลอยอยู่มุมขวาบน */
+  padding-right: calc(var(--touch-min) + 0.25rem);
 }
 
 .road-popup-value {
@@ -318,8 +321,7 @@
     left: 50%;
     right: auto;
     bottom: 2.25rem;
-    width: 22rem;
-    max-width: 90vw;
+    width: min(24rem, 90vw);
     transform: translateX(-50%);
     border-radius: var(--radius-img);
     padding: 1.5rem;
@@ -365,5 +367,147 @@
 
   .road-popup-close {
     display: none;
+  }
+}
+
+/* ---- ปลายทางของตัวเลข: เน้นเป็นตัวหนาสีฟ้าใหญ่ขึ้น ---- */
+/* ใช้กับทั้ง headline / pop-up / สรุปด้านล่าง เมื่อ useCountUp นับถึงค่าสุดท้ายแล้ว */
+.road-stats-headline-number,
+.road-popup-value,
+.road-stats-summary-value {
+  display: inline-block;
+  transform-origin: center;
+  transition: color 0.3s ease, font-size 0.3s ease;
+}
+
+.road-stats-headline-number.is-count-done,
+.road-popup-value.is-count-done,
+.road-stats-summary-value.is-count-done {
+  color: var(--color-blue);
+  font-weight: 800;
+  animation: road-count-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.road-stats-headline-number.is-count-done {
+  font-size: calc(var(--text-4xl) * 1.15);
+}
+
+.road-popup-value.is-count-done {
+  font-size: calc(var(--text-3xl) * 1.15);
+}
+
+.road-stats-summary-value.is-count-done {
+  font-size: calc(var(--text-xl) * 1.15);
+}
+
+/* ข้อความต่อท้าย (เคส / คน) คงสีเดิมไว้ ไม่ต้องเน้นตาม */
+.road-popup-value.is-count-done .road-popup-suffix,
+.road-stats-summary-value.is-count-done small {
+  color: var(--color-gray);
+  font-weight: 600;
+}
+
+@keyframes road-count-pop {
+  0% { transform: scale(1); }
+  55% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* ผู้ใช้ที่ปิดอนิเมชัน — เน้นสีและขนาดได้ แต่ไม่ต้องเด้ง */
+@media (prefers-reduced-motion: reduce) {
+  .road-stats-headline-number,
+  .road-popup-value,
+  .road-stats-summary-value {
+    transition: none;
+  }
+
+  .road-stats-headline-number.is-count-done,
+  .road-popup-value.is-count-done,
+  .road-stats-summary-value.is-count-done {
+    animation: none;
+  }
+}
+
+/* ---- บรรทัดฐานเปรียบเทียบ "จาก X ในปี YYYY" ---- */
+.road-stats-headline-baseline {
+  flex-basis: 100%;
+  font-size: var(--text-sm);
+  color: var(--color-gray);
+  text-decoration: line-through;
+  text-decoration-color: rgba(95, 94, 90, 0.5);
+}
+
+.road-popup-baseline {
+  font-size: var(--text-xs);
+  color: var(--color-gray);
+  margin: -0.25rem 0 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.road-stats-summary-baseline {
+  font-size: var(--text-xs);
+  color: var(--color-gray);
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- กันข้อความล้นกรอบ pop-up ---- */
+/* ภาษาไทยไม่มีเว้นวรรคระหว่างคำ เบราว์เซอร์จึงหาจุดตัดบรรทัดไม่เจอและดันข้อความทะลุกรอบ */
+.road-popup {
+  box-sizing: border-box;
+  max-width: 100%;
+  /* เนื้อหายาวเกินจอ (จอเตี้ย/ซูมใหญ่) ให้เลื่อนในกรอบแทนการล้น */
+  max-height: 85vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.road-popup-unit,
+.road-popup-baseline,
+.road-popup-title,
+.road-popup-desc {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+.road-popup-value {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* การ์ดสรุปด้านล่างก็ใช้ข้อความไทยชุดเดียวกัน */
+.road-stats-summary-item {
+  min-width: 0;
+}
+
+.road-stats-summary-value,
+.road-stats-summary-title,
+.road-stats-summary-baseline {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* บน desktop pop-up ลอยอยู่เหนือจุด และมีลูกศรชี้ที่วาดด้วย ::after นอกกรอบ
+   ถ้าใส่ overflow/max-width แบบ bottom sheet ลูกศรจะโดนตัดและกล่องจะถูกบีบตามความกว้างของจุด */
+@media (min-width: 1024px) {
+  .road-popup {
+    max-width: none;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* ---- ให้ pop-up ลอยพ้นกรอบแผนที่ได้ ---- */
+/* .road-map ตั้ง overflow: hidden ไว้เพื่อตัดภาพถนนให้โค้งมนตามการ์ด
+   แต่มันเฉือน pop-up ของจุดที่อยู่สูง (เยาวชนถนนสีขาว top: 52%) ที่เปิดขึ้นด้านบนด้วย
+   จึงย้ายการตัดขอบมนไปไว้ที่ตัว SVG แล้วปล่อยให้กรอบนอกลอยทะลุได้ */
+.road-map-svg {
+  border-radius: var(--radius-img);
+}
+
+@media (min-width: 1024px) {
+  .road-map {
+    overflow: visible;
   }
 }
