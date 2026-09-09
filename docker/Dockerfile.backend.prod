@@ -1,0 +1,23 @@
+# ==============================================================================
+# Backend (production) — ไม่ติดตั้ง devDependencies และรันด้วย node ตรง ๆ
+# ต่างจาก Dockerfile.backend (dev) ที่ใช้ nodemon คอยรีสตาร์ต
+# ==============================================================================
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY backend/package*.json ./
+RUN npm install --omit=dev
+
+COPY backend/ ./
+
+ENV NODE_ENV=production \
+    PORT=9100
+
+EXPOSE 9100
+
+# รันด้วยผู้ใช้ที่ไม่ใช่ root
+USER node
+
+CMD ["npm", "start"]

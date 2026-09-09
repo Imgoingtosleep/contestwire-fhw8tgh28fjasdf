@@ -1,0 +1,35 @@
+# ==============================================================================
+# Frontend (production) — build ด้วย Node แล้วเสิร์ฟไฟล์นิ่งด้วย Nginx
+# ต่างจาก Dockerfile.frontend (dev) ที่รัน webpack-dev-server ค้างไว้
+# build context = รากโปรเจกต์ เพราะต้องหยิบทั้ง frontend/ และ nginx/
+# ==============================================================================
+
+# ---- ขั้นที่ 1: build ----
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+COPY frontend/package*.json ./
+# ไม่ใช้ npm ci เพราะ package-lock.json ไม่ได้ถูกเก็บใน git (ดู .gitignore)
+RUN npm install
+
+COPY frontend/ ./
+
+# CRA ฝังค่า REACT_APP_* ตอน build ไม่ใช่ตอนรัน จึงต้องส่งเข้ามาเป็น build arg
+ARG REACT_APP_API_URL=/api
+ARG REACT_APP_SITE_NAME
+ENV REACT_APP_API_URL=$REACT_APP_API_URL \
+    REACT_APP_SITE_NAME=$REACT_APP_SITE_NAME \
+    GENERATE_SOURCEMAP=false
+
+RUN npm run build
+
+# ---- ขั้นที่ 2: เสิร์ฟ ----
+FROM nginx:1.27-alpine
+
+# เทมเพลตถูกแทนค่าตัวแปรตอนคอนเทนเนอร์สตาร์ต (กลไก envsubst ของอิมเมจ nginx เอง
+# ซึ่งแทนเฉพาะชื่อที่มีอยู่จริงใน environment ตัวแปรของ nginx อย่าง $host จึงไม่โดน)
+COPY nginx/prod.conf.template /etc/nginx/templates/default.conf.template
+COPY --from=build /app/build /usr/share/nginx/html
+
+EXPOSE 80 443

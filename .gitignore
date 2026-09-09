@@ -4,6 +4,7 @@
 .env
 .env.*
 !.env.example
+!.env.production.example
 *.env
 *.pem
 *.key
@@ -14,6 +15,8 @@
 credentials.json
 secrets.*
 *.secret
+certbot/
+letsencrypt/
 
 # ==========================================
 # 2. AI Assistant & Agent Context Files
@@ -88,3 +91,20 @@ Desktop.ini
 *.swo
 *.sublime-workspace
 *.sublime-project
+
+# ==========================================
+# 8. Deployment Artifacts (เกิดบนเซิร์ฟเวอร์ ไม่ต้องขึ้น Git)
+# ==========================================
+# ไฟล์สำรองฐานข้อมูลจาก scripts/backup-db.sh
+backups/
+*.sql
+*.sql.gz
+*.dump
+
+# ค่าปรับแต่ง compose เฉพาะเครื่อง
+docker-compose.override.yml
+docker-compose.*.local.yml
+
+# ล็อก
+logs/
+*.log

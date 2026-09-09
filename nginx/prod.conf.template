@@ -1,0 +1,93 @@
+# ==============================================================================
+# Nginx (production) — เสิร์ฟไฟล์นิ่งของ React + reverse proxy ไป backend + TLS
+# ตัวแปร ${...} ถูกแทนค่าตอนคอนเทนเนอร์สตาร์ต จาก environment ของ service "web"
+# ==============================================================================
+
+# ---------- HTTP: ใช้ต่อใบรับรองและผลักไป HTTPS ----------
+server {
+    listen 80;
+    listen [::]:80;
+    server_name ${DOMAIN} www.${DOMAIN};
+
+    # ต้องเปิดไว้ตลอด ไม่งั้นต่ออายุใบรับรองอัตโนมัติจะล้มเหลว
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# ---------- HTTPS ----------
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name ${DOMAIN} www.${DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 1d;
+
+    # ---- Security headers ----
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options    "nosniff" always;
+    add_header X-Frame-Options           "SAMEORIGIN" always;
+    add_header Referrer-Policy           "strict-origin-when-cross-origin" always;
+
+    # ---- Compression ----
+    gzip              on;
+    gzip_vary         on;
+    gzip_min_length   1024;
+    gzip_proxied      any;
+    gzip_types        text/plain text/css application/javascript application/json
+                      image/svg+xml font/woff font/woff2;
+
+    root  /usr/share/nginx/html;
+    index index.html;
+
+    # ---- Backend API ----
+    location /api {
+        # ถ้าเขียน proxy_pass http://backend:9100 ตรง ๆ nginx จะ resolve ชื่อนี้
+        # ตั้งแต่ตอนโหลดคอนฟิก แล้วสตาร์ตไม่ขึ้นทั้งตัวถ้า backend ยังไม่พร้อม
+        # การใส่ผ่านตัวแปรบวก resolver ของ Docker ทำให้ resolve ตอนมีคำขอเข้ามาแทน
+        # nginx จึงบูตได้เสมอ และตามทัน IP ใหม่เมื่อ backend รีสตาร์ต
+        resolver 127.0.0.11 valid=10s ipv6=off;
+        set $upstream_backend http://backend:9100;
+        proxy_pass $upstream_backend$request_uri;
+
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # ต้องไม่น้อยกว่า MAX_UPLOAD_SIZE_MB ของ backend ไม่งั้น nginx ตัดก่อน
+        client_max_body_size ${MAX_UPLOAD_SIZE_MB}m;
+
+        # อัปโหลดไฟล์ใหญ่ใช้เวลานาน
+        proxy_connect_timeout 60s;
+        proxy_send_timeout    300s;
+        proxy_read_timeout    300s;
+    }
+
+    # ---- ไฟล์ที่มี hash ในชื่อ แคชได้ยาว ----
+    location /static/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # ---- SPA: ทุกเส้นทางตกมาที่ index.html ให้ react-router จัดการ ----
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # index.html ห้ามแคช ไม่งั้น deploy ใหม่แล้วผู้ใช้ยังได้ bundle เก่า
+    location = /index.html {
+        add_header Cache-Control "no-cache, must-revalidate";
+    }
+}

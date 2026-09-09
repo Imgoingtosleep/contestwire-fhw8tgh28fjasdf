@@ -1,0 +1,107 @@
+# ==============================================================================
+# Production stack — ใช้คู่กับ .env.production
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+#
+# ต่างจาก docker-compose.yml (dev) ตรงที่:
+#   - ไม่มี bind mount ซอร์สโค้ด (โค้ดถูก build เข้าอิมเมจแล้ว)
+#   - postgres และ backend ไม่เปิดพอร์ตออกสู่อินเทอร์เน็ต เข้าถึงได้เฉพาะในเครือข่าย
+#   - เปิดเฉพาะ 80 และ 443 ที่ service web
+# ==============================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rs_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend.prod
+    container_name: rs_backend
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=9100
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - MAX_UPLOAD_SIZE_MB=${MAX_UPLOAD_SIZE_MB}
+      - R2_ACCOUNT_ID=${R2_ACCOUNT_ID}
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
+      - R2_BUCKET_NAME=${R2_BUCKET_NAME}
+      - R2_PUBLIC_URL=${R2_PUBLIC_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend.prod
+      args:
+        # CRA ฝังค่าตอน build — เปลี่ยนค่าแล้วต้อง --build ใหม่เสมอ
+        REACT_APP_API_URL: ${REACT_APP_API_URL}
+        REACT_APP_SITE_NAME: ${REACT_APP_SITE_NAME}
+    container_name: rs_web
+    restart: always
+    environment:
+      # ใช้แทนค่าในเทมเพลต nginx ตอนสตาร์ต
+      - DOMAIN=${DOMAIN}
+      - MAX_UPLOAD_SIZE_MB=${MAX_UPLOAD_SIZE_MB}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certbot_conf:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    depends_on:
+      - backend
+    networks:
+      - internal
+    # certbot ต่ออายุใบรับรองในคอนเทนเนอร์ของมันเอง nginx จึงต้องรีโหลดเป็นระยะ
+    # เพื่อหยิบใบใหม่มาใช้ ไม่งั้นจะยังเสิร์ฟใบเก่าจนหมดอายุ
+    command: >
+      sh -c "while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g 'daemon off;'"
+
+  # ต่ออายุใบรับรองอัตโนมัติ — ตื่นทุก 12 ชม. certbot จะต่อให้เมื่อเหลือ < 30 วัน
+  certbot:
+    image: certbot/certbot:latest
+    container_name: rs_certbot
+    restart: always
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do certbot renew --webroot -w /var/www/certbot --quiet;
+             sleep 12h & wait $${!}; done"
+
+volumes:
+  postgres_data:
+  certbot_conf:
+  certbot_www:
+
+networks:
+  internal:
