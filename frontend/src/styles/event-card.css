@@ -27,6 +27,7 @@
 }
 
 .event-card-title {
+  font-family: var(--font-head);
   font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-ink);
@@ -40,6 +41,8 @@
 }
 
 .event-card-summary {
+  font-family: var(--font-body);
+  font-weight: 300;
   font-size: var(--text-sm);
   line-height: 1.65;
   color: var(--color-gray);

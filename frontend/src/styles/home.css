@@ -1,71 +1,62 @@
-/* หน้าแรก — Figma frame "home" */
+/* หน้าแรก — แนวทาง B "Data Forward": ฮีโร่สั้น → สถิตินำ → เสาหลักเกยขอบ → วิดีโอเต็มจอ
+   Mobile-first: base = mobile แล้วขยายด้วย @media (min-width: ...) */
+
+/* ---- เสาหลัก 3 ข้อ ---- */
+
+.home-pillars {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- วิดีโอเต็มความกว้าง ---- */
 
 .home-video-section {
-  padding-top: 0;
+  padding: 0;
 }
 
 .home-video {
-  max-width: 63.1875rem; /* Figma 1011px */
+  margin: 0;
+}
+
+/* เต็มขอบจอ จึงไม่ต้องมีมุมมน เงา หรือการยกตัวตอน hover */
+.home-video .video-player,
+.home-video .video-player:hover {
+  border-radius: 0;
+  box-shadow: none;
+  transform: none;
+}
+
+.home-video .video-player-caption {
+  max-width: var(--container-max);
   margin: 0 auto;
-}
-
-.home-video-link {
-  position: relative;
-  display: block;
-  border-radius: var(--radius-img);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: transform var(--transition), box-shadow var(--transition);
-}
-
-.home-video-link:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-.home-video-thumb {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-}
-
-.home-video-play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(3.5rem, 2.5rem + 4vw, 5.5rem);
-  height: clamp(2.5rem, 1.8rem + 2.8vw, 3.875rem);
-  border-radius: 1rem;
-  background: var(--color-red);
-  color: var(--color-white);
-  transition: background-color var(--transition), transform var(--transition);
-}
-
-.home-video-link:hover .home-video-play {
-  background: var(--color-red-dark);
-  transform: translate(-50%, -50%) scale(1.06);
-}
-
-.home-video-play svg {
-  width: 45%;
-  height: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 
 /* ---- Tablet ---- */
 @media (min-width: 768px) {
-  .home-video-play {
-    border-radius: 1.25rem;
+  .home-video .video-player-caption {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 
 /* ---- Desktop ---- */
 @media (min-width: 1024px) {
-  .home-video-section {
+  /* ดึงการ์ดขึ้นไปเกยขอบล่างของแถบสถิติ
+     (คู่กับ .road-stats ใน road-stats.css — แก้ค่าใดค่าหนึ่งต้องแก้อีกค่าด้วย) */
+  .home-pillars {
+    margin-top: -10rem;
     padding-top: 0;
+  }
+
+  /* การ์ดครีมวางบนแถบ offwhite — ต้องมีเงาหนักขึ้นถึงจะแยกออกจากพื้น */
+  .home-pillars .cream-card {
+    box-shadow: var(--shadow-md);
+  }
+
+  .home-video .video-player-caption {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
   }
 }

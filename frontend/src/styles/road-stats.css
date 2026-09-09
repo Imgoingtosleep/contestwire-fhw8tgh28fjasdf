@@ -1,7 +1,122 @@
 /* Interactive Statistics — กราฟิกถนน + hover/tap pop-up + ตัวเลขวิ่ง */
 
 .road-stats {
-  background: var(--color-white);
+  /* แนวทาง B: สถิตินำก่อน จึงให้เป็นแถบสีต่างจากพื้นหน้า
+     และเผื่อพื้นที่ล่างไว้ให้การ์ดเสาหลักเกยขึ้นมาทับ */
+  background: var(--color-offwhite);
+}
+
+/* ---- เทียบก่อน/หลัง (Direction B) ---- */
+
+.road-compare {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: stretch;
+  margin-bottom: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+}
+
+.road-compare-card {
+  padding: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+  border-radius: var(--radius-card);
+}
+
+.road-compare-before {
+  background: var(--color-cream);
+}
+
+.road-compare-after {
+  background: var(--color-blue);
+  box-shadow: var(--shadow-md);
+}
+
+.road-compare-era {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-gray);
+  margin: 0 0 0.5rem;
+}
+
+.road-compare-after .road-compare-era {
+  color: var(--color-white);
+  opacity: 0.85;
+}
+
+.road-compare-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15em;
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-gray);
+  margin: 0;
+}
+
+.road-compare-value small {
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+.road-compare-after .road-compare-value {
+  color: var(--color-white);
+}
+
+.road-compare-bar {
+  height: 0.75rem;
+  margin-top: 1.125rem;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.road-compare-after .road-compare-bar {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.road-compare-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transform-origin: left center;
+}
+
+.road-compare-fill.is-before {
+  background: var(--color-gray);
+  opacity: 0.45;
+}
+
+/* ย่อแถบตามสัดส่วนตัวเลขจริงที่ส่งมาจาก stats.json */
+.road-compare-fill.is-after {
+  background: var(--color-red);
+  transform: scaleX(var(--compare-ratio, 1));
+  transition: transform 2.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.road-compare-drop {
+  margin: 0.75rem 0 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.road-compare-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-red);
+  transform: rotate(90deg);
+}
+
+.road-compare-arrow svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .road-compare-fill.is-after { transition: none; }
 }
 
 /* ---- สถิติรวมด้านบน ---- */
@@ -293,6 +408,17 @@
 
 /* ---- Tablet ---- */
 @media (min-width: 768px) {
+  .road-compare {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1.5rem;
+  }
+
+  .road-compare-arrow {
+    transform: none;
+  }
+}
+
+@media (min-width: 768px) {
   .road-hotspot-label {
     display: inline;
     white-space: nowrap;
@@ -311,6 +437,15 @@
 
   .road-stats-cue {
     margin-bottom: 1.5rem;
+  }
+}
+
+/* ---- Desktop ---- */
+@media (min-width: 1024px) {
+  /* เผื่อพื้นที่ล่างให้การ์ดเสาหลักใน HomePage เกยขึ้นมาทับขอบแถบ
+     (คู่กับ .home-pillars ใน home.css — แก้ค่าใดค่าหนึ่งต้องแก้อีกค่าด้วย) */
+  .road-stats {
+    padding-bottom: calc(var(--space-section) + 10rem);
   }
 }
 

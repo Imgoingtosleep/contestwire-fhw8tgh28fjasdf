@@ -10,6 +10,7 @@ export default function ArticlesPage() {
       <Hero
         titleWhite="ARTICLE"
         titleBlue="S"
+        joinedTitle
         description="รวมบทความและข่าวสารเกี่ยวกับความปลอดภัยบนท้องถนน กิจกรรมของโครงการ และเรื่องราวจากเยาวชนถนนสีขาวทั่วประเทศ"
       />
 

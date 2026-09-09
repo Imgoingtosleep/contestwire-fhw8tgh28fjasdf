@@ -1,21 +1,31 @@
 /* ==========================================================================
    Global Styles — โตโยต้า ถนนสีขาว (Toyota Road Safety)
    Design tokens ดึงจาก Figma: rdYH3WhgD6kAgkSflzmRuE
-   Typography: Prompt (ตาม requirement_1.md)
+   Typography: Helvetica ทั้งเว็บ + Sarabun รับช่วงกลีฟภาษาไทย (ฟอนต์ตามไฟล์ Figma)
    Mobile-first: base = mobile แล้วขยายด้วย @media (min-width: ...)
    ========================================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap");
 
 :root {
-  /* ---- สีจาก Figma ---- */
-  --color-blue: #28b7f3;          /* หัวข้อหลัก / ปุ่ม LOGIN */
+  /* ---- ฟอนต์: Helvetica ทั้งเว็บ ----
+     Helvetica ไม่มีกลีฟภาษาไทย จึงให้ Sarabun (ฟอนต์ที่ใช้จริงในไฟล์ Figma)
+     รับช่วงเฉพาะตัวอักษรไทย — เบราว์เซอร์ fallback ทีละตัวอักษร */
+  --font-base: "Helvetica Neue", Helvetica, Arial, "Sarabun", sans-serif;
+  --font-head: var(--font-base);
+  --font-body: var(--font-base);
+
+  /* ---- สีจาก Figma: rdYH3WhgD6kAgkSflzmRuE ---- */
+  --color-blue: #28b7f3;          /* หัวข้อ section / ปุ่ม LOGIN / ลิงก์ */
   --color-blue-dark: #109ad4;
   --color-blue-soft: #e8f7fe;
-  --color-red: #e0122a;           /* ปุ่ม CTA / หัวข้อรอง */
+  --color-red: #e0122a;           /* ปุ่ม CTA / accent */
   --color-red-dark: #b70e21;
+
+  /* ---- พื้นผิว ---- */
+  --color-surface: #ffffff;       /* พื้นหน้าเว็บ + การ์ดสีขาว (navbar, ฟอร์ม, วิดีโอ) */
   --color-cream: #f1efe8;         /* พื้นการ์ด */
-  --color-offwhite: #f9f8f8;      /* พื้นส่วน PARTNERS */
+  --color-offwhite: #f9f8f8;      /* พื้นแถบสลับ / PARTNERS */
   --color-gray: #5f5e5a;          /* ข้อความรอง */
   --color-ink: #000000;           /* ข้อความหลัก */
   --color-white: #ffffff;
@@ -38,7 +48,7 @@
   /* ---- Layout ---- */
   --container-max: 1152px;   /* Figma: content 1152px กว้างในเฟรม 1440px */
   --navbar-height: 60px;
-  --space-section: clamp(2.75rem, 1.5rem + 5vw, 5.5rem);
+  --space-section: clamp(3.5rem, 2rem + 6vw, 7rem);
 
   /* ---- Shape ---- */
   --radius-card: clamp(1.25rem, 0.9rem + 1.4vw, 2.1875rem); /* Figma r=35 */
@@ -46,8 +56,8 @@
   --radius-sm: 8px;
   --radius-pill: 999px;
 
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.07), 0 16px 40px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 22px 48px rgba(0, 0, 0, 0.14);
 
   --transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -68,10 +78,10 @@ html {
 
 body {
   margin: 0;
-  font-family: "Prompt", Helvetica, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body);
   font-size: var(--text-base);
   font-weight: 400;
-  line-height: 1.7;
+  line-height: 1.75;
   background: var(--color-white);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
@@ -92,8 +102,10 @@ img {
 
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
-  font-weight: 500;
-  line-height: 1.3;
+  font-family: var(--font-base);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   color: var(--color-ink);
 }
 
@@ -156,16 +168,19 @@ ol {
 }
 
 .section-title {
+  font-family: var(--font-base);
   font-size: var(--text-2xl);
-  font-weight: 500;
+  font-weight: 700;
+  letter-spacing: -0.015em;
   color: var(--color-blue);
-  margin-bottom: 0.25rem;
-  line-height: 1.25;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
 }
 
 .section-subtitle {
+  font-family: var(--font-body);
   font-size: var(--text-base);
-  font-weight: 400;
+  font-weight: 300;
   color: var(--color-gray);
   margin: 0;
 }
@@ -188,14 +203,22 @@ ol {
   padding: 0.625rem 1.75rem;
   border: 2px solid transparent;
   border-radius: var(--radius-pill);
-  font-family: inherit;
+  font-family: var(--font-head);
   font-size: var(--text-sm);
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   line-height: 1.4;
   text-align: center;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
   transition: background-color var(--transition), color var(--transition),
-    border-color var(--transition), transform var(--transition);
+    border-color var(--transition), transform var(--transition),
+    box-shadow var(--transition);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary {
@@ -208,6 +231,7 @@ ol {
   background: var(--color-red-dark);
   border-color: var(--color-red-dark);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-blue {
@@ -220,18 +244,24 @@ ol {
   background: var(--color-blue-dark);
   border-color: var(--color-blue-dark);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-outline {
   background: transparent;
   border-color: var(--color-red);
   color: var(--color-red);
+  box-shadow: none;
 }
 
 .btn-outline:hover {
   background: var(--color-red);
   color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
+
+
 
 .btn-block {
   width: 100%;
@@ -255,6 +285,7 @@ ol {
   background: var(--color-cream);
   border-radius: var(--radius-card);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 /* ---------- Accessibility ---------- */
@@ -275,7 +306,8 @@ ol {
 
 :focus-visible {
   outline: 3px solid var(--color-blue);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
 }
 
 /* ---------- Reveal on scroll ---------- */

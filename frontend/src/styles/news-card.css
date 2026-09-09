@@ -12,10 +12,19 @@
   box-shadow: var(--shadow-md);
 }
 
+/* ภาพซูมเบา ๆ ตอน hover — ให้การ์ดรู้สึกตอบสนอง ไม่ใช่กล่องนิ่ง */
+.news-card-image {
+  transition: transform var(--transition);
+}
+
+.news-card:hover .news-card-image {
+  transform: scale(1.04);
+}
+
 .news-card-media {
   position: relative;
   aspect-ratio: 16 / 10;
-  background: #e6e3da;
+  background: var(--color-cream);
   overflow: hidden;
 }
 
@@ -52,14 +61,17 @@
 }
 
 .news-card-title {
+  font-family: var(--font-head);
   font-size: var(--text-lg);
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.35;
   color: var(--color-ink);
   margin: 0;
 }
 
 .news-card-summary {
+  font-family: var(--font-body);
+  font-weight: 300;
   font-size: var(--text-sm);
   line-height: 1.65;
   color: var(--color-gray);

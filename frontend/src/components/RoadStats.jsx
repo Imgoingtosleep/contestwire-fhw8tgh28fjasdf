@@ -26,6 +26,55 @@ function HeadlineCounter({ value, countFrom, suffix, baseline, active }) {
   );
 }
 
+/**
+ * การ์ดเทียบก่อน/หลัง — ใช้ countFrom เป็นฐานปี 2562 และ value เป็นผลปีล่าสุด
+ * แถบด้านล่างยาวตามสัดส่วนของตัวเลขจริง ไม่ใช่ค่าที่ hardcode ไว้
+ */
+function ComparePair({ headline, active }) {
+  const { countFrom, value, suffix } = headline;
+  const [after, afterDone] = useCountUp(value, active, 2400, countFrom);
+  const ratio = countFrom > 0 ? value / countFrom : 1;
+  const drop = countFrom > 0 ? (1 - ratio) * 100 : 0;
+
+  return (
+    <div className="road-compare">
+      <div className="road-compare-card road-compare-before">
+        <p className="road-compare-era">ปี 2562 — ก่อนโครงการเข้าพื้นที่</p>
+        <p className="road-compare-value">
+          {formatNumber(countFrom)}
+          <small>{suffix}</small>
+        </p>
+        <div className="road-compare-bar">
+          <span className="road-compare-fill is-before" />
+        </div>
+      </div>
+
+      <div className="road-compare-arrow" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="13 6 19 12 13 18" />
+        </svg>
+      </div>
+
+      <div className="road-compare-card road-compare-after">
+        <p className="road-compare-era">ปี 2569 — หลังโครงการเข้าพื้นที่</p>
+        <p className={`road-compare-value${afterDone ? " is-count-done" : ""}`}>
+          {formatNumber(after)}
+          <small>{suffix}</small>
+        </p>
+        <div className="road-compare-bar">
+          {/* ส่งเฉพาะ "ค่า" ผ่าน custom property — การตกแต่งทั้งหมดยังอยู่ใน CSS */}
+          <span
+            className="road-compare-fill is-after"
+            style={{ "--compare-ratio": active ? ratio : 1 }}
+          />
+        </div>
+        <p className="road-compare-drop">ลดลง {drop.toFixed(1)}%</p>
+      </div>
+    </div>
+  );
+}
+
 /** Pop-up สถิติของแต่ละจุดบนถนน (นับเลขใหม่ทุกครั้งที่เปิด) */
 function HotspotPopup({ item, onClose }) {
   const [current, done] = useCountUp(item.value, true, 1800, item.countFrom);
@@ -92,6 +141,8 @@ export default function RoadStats() {
           />
           <p className="road-stats-headline-note">{headline.note}</p>
         </div>
+
+        <ComparePair headline={headline} active={inView} />
 
         <p className="road-stats-cue">
           <span className="road-stats-cue-dot" aria-hidden="true" />

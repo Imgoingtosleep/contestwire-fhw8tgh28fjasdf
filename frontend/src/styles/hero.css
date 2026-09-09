@@ -47,6 +47,13 @@
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
 }
 
+/* หัวเรื่องที่สองส่วนเป็นคำเดียวกัน — ต้องติดกันตั้งแต่จอเล็กสุด */
+.hero-title.hero-title-joined {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
 .hero-title-white {
   color: var(--color-white);
 }

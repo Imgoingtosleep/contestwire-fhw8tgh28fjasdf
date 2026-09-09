@@ -6,6 +6,7 @@ import Reveal from "../components/Reveal";
 import PillarCard from "../components/PillarCard";
 import EventCard from "../components/EventCard";
 import RoadStats from "../components/RoadStats";
+import VideoPlayer from "../components/VideoPlayer";
 
 import pillars from "../data/pillars.json";
 import events from "../data/events.json";
@@ -26,10 +27,13 @@ export default function HomePage() {
         ctaTo="/about"
       />
 
-      {/* ---- ROAD SAFETY ---- */}
-      <section className="section">
+      {/* ---- สถิติแบบโต้ตอบ ---- */}
+      <RoadStats />
+
+      {/* ---- ROAD SAFETY : การ์ดเกยขอบแถบสถิติ ---- */}
+      <section className="section home-pillars">
         <div className="container">
-          <Reveal className="section-head">
+          <Reveal className="section-head section-head-center">
             <h2 className="section-title">ROAD SAFETY</h2>
             <p className="section-subtitle">
               ความปลอดภัยบนท้องถนน เริ่มต้นที่เราทุกคน
@@ -50,34 +54,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---- สถิติแบบโต้ตอบ ---- */}
-      <RoadStats />
-
-      {/* ---- วิดีโอแนะนำโครงการ ---- */}
-      <section className="section home-video-section">
-        <div className="container">
-          <Reveal className="home-video">
-            <a
-              className="home-video-link"
-              href={site.social.find((s) => s.id === "youtube").url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="เปิดดูวิดีโอโครงการโตโยต้า ถนนสีขาว บน YouTube"
-            >
-              <img
-                src={videoThumb}
-                alt="วิดีโอแนะนำโครงการโตโยต้า ถนนสีขาว"
-                className="home-video-thumb"
-                loading="lazy"
-              />
-              <span className="home-video-play" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-            </a>
-          </Reveal>
-        </div>
+      {/* ---- วิดีโอแนะนำโครงการ : เต็มความกว้าง ---- */}
+      <section className="home-video-section">
+        <Reveal className="home-video">
+          <VideoPlayer
+            poster={videoThumb}
+            posterAlt="วิดีโอแนะนำโครงการโตโยต้า ถนนสีขาว"
+            title={site.video.title}
+            caption={site.video.caption}
+            duration={site.video.duration}
+            youtubeId={site.video.youtubeId}
+            href={site.social.find((s) => s.id === "youtube").url}
+          />
+        </Reveal>
       </section>
 
       {/* ---- UPCOMING EVENTS ---- */}

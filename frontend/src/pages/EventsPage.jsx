@@ -10,6 +10,7 @@ export default function EventsPage() {
       <Hero
         titleWhite="EVENT"
         titleBlue="S"
+        joinedTitle
         description="โตโยต้ามุ่งมั่นในการรณรงค์และจัดกิจกรรมด้านความปลอดภัยบนท้องถนนอย่างต่อเนื่อง ทั้งกิจกรรมในสถานศึกษา ชุมชน และเครือข่ายเยาวชนทั่วประเทศ"
       />
 
