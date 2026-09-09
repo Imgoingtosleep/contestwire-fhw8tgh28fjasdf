@@ -1,110 +1,196 @@
-/* Footer — Figma "Footer" (PARTNERS บนพื้น #F9F8F8 + แถบล่างพื้นไล่สีฟ้าอ่อน) */
+/* Footer — Figma "Footer" (PARTNERS บนพื้น #F9F8F8 + แถบล่างโทนฟ้าอ่อน)
+   Mobile-first: base = mobile แล้วขยายด้วย @media (min-width: ...) */
 
 .footer {
   margin-top: auto;
+}
+
+/* เส้นคั่นสองข้างหัวข้อ PARTNERS */
+.footer-rule {
+  height: 1px;
+  flex: 1 1 auto;
+  max-width: 5rem;
+  background: var(--color-line);
 }
 
 /* ---- PARTNERS ---- */
 
 .footer-partners {
   background: var(--color-offwhite);
-  padding: clamp(2rem, 1.5rem + 2vw, 3rem) 0;
+  padding: clamp(2.5rem, 2rem + 2vw, 3.75rem) 0;
   text-align: center;
 }
 
 .footer-partners-title {
-  font-size: var(--text-xl);
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  color: var(--color-ink);
-  margin-bottom: clamp(1.25rem, 1rem + 1vw, 2rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--color-red);
+  margin-bottom: clamp(1.5rem, 1.2rem + 1vw, 2.25rem);
 }
 
 .footer-partners-list {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: clamp(1.5rem, 1rem + 3vw, 2.75rem);
+  gap: clamp(0.75rem, 0.5rem + 1.5vw, 1.5rem);
 }
 
-.footer-partners-list img {
-  height: clamp(3.5rem, 2.5rem + 3vw, 8rem);
+/* การ์ดขาวใต้โลโก้ ทำให้โลโก้ที่พื้นหลังต่างกันดูมีน้ำหนักเท่ากัน */
+.footer-partner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.875rem, 0.7rem + 1vw, 1.5rem) clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  background: var(--color-white);
+  border-radius: var(--radius-img);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.footer-partner:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.footer-partner img {
+  height: clamp(2.75rem, 2rem + 2.5vw, 5rem);
   width: auto;
   object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.65;
+  transition: filter var(--transition), opacity var(--transition);
+}
+
+.footer-partner:hover img {
+  filter: grayscale(0);
+  opacity: 1;
 }
 
 /* ---- แถบล่าง ---- */
 
 .footer-main {
-  background: linear-gradient(180deg, #eaf6fd 0%, #d7eefb 100%);
-  padding: clamp(2rem, 1.5rem + 3vw, 3.75rem) 0;
+  background: linear-gradient(
+    180deg,
+    var(--color-white) 0%,
+    var(--color-blue-soft) 100%
+  );
+  padding: clamp(2.5rem, 2rem + 3vw, 3rem) 0 0;
 }
 
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: 2.5rem;
 }
 
 .footer-logo {
   width: clamp(10rem, 8rem + 8vw, 16.6875rem);
   height: auto;
+  margin-top: 0.25rem;
   margin-bottom: 1.25rem;
 }
 
-.footer-company,
+.footer-company {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--color-ink);
+  margin-bottom: 0.25rem;
+}
+
 .footer-address {
   font-size: var(--text-xs);
-  line-height: 1.7;
+  line-height: 1.8;
   color: var(--color-gray);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.25rem;
   white-space: pre-line;
 }
 
-.footer-address {
-  margin-bottom: 0;
+/* ---- CONTACT ---- */
+
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .footer-contact-title {
-  font-size: var(--text-base);
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  color: var(--color-gray);
-  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--color-red);
+  /* หัวข้อเป็น heading จึงเว้นมากกว่าระยะระหว่างบรรทัดเล็กน้อย */
+  margin-bottom: 0.25rem;
 }
 
 .footer-contact-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.875rem;
+}
+
+.footer-contact-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
+  color: var(--color-blue);
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.footer-contact-row:hover .footer-contact-chip {
+  background: var(--color-blue);
+  color: var(--color-white);
+}
+
+.footer-contact-chip svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.footer-contact-text {
+  display: flex;
+  flex-direction: column;
   font-size: var(--text-sm);
   line-height: 1.5;
-  color: var(--color-gray);
-  margin-bottom: 1.25rem;
+  color: var(--color-ink);
 }
 
-.footer-contact-row a {
+.footer-contact-text a {
   color: inherit;
+  font-weight: 500;
+  transition: color var(--transition);
 }
 
-.footer-contact-row a:hover {
+.footer-contact-text a:hover {
   color: var(--color-blue);
-  text-decoration: underline;
 }
 
-.footer-contact-icon {
-  width: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-  height: auto;
-  flex-shrink: 0;
+.footer-contact-sub {
+  font-size: var(--text-xs);
   color: var(--color-gray);
 }
+
+/* ---- โซเชียล ---- */
 
 .footer-social {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
+  gap: 0.625rem;
 }
 
 .footer-social a {
@@ -113,19 +199,45 @@
   justify-content: center;
   width: var(--touch-min);
   height: var(--touch-min);
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
+  background: var(--color-white);
   color: var(--color-gray);
-  transition: color var(--transition), background-color var(--transition);
+  box-shadow: var(--shadow-sm);
+  transition: color var(--transition), background-color var(--transition),
+    transform var(--transition), box-shadow var(--transition);
 }
 
 .footer-social a:hover {
-  color: var(--color-blue);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--color-blue);
+  color: var(--color-white);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
 }
 
 .footer-social-icon {
-  width: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
+  width: 1.25rem;
   height: auto;
+}
+
+/* ---- บรรทัดปิดท้าย ---- */
+
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  /* คอลัมน์ซ้าย (โลโก้+ที่อยู่) สูงกว่าคอลัมน์ขวา ระยะนี้จึงวัดจากท้ายที่อยู่
+     ต้องเว้นให้พอ ไม่งั้นเส้นคั่นจะไปชิดบรรทัดที่อยู่ */
+  margin-top: clamp(4rem, 3rem + 5vw, 7rem);
+  padding-top: 1.75rem;
+  padding-bottom: 1.75rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.footer-copyright,
+.footer-tagline {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--color-gray);
 }
 
 /* ---- Tablet ---- */
@@ -133,13 +245,32 @@
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
+    align-items: start;
+  }
+
+  /* ชดเชยสายตา: คอลัมน์ขวาเริ่มด้วยตัวอักษรเล็ก ส่วนซ้ายเริ่มด้วยโลโก้
+     ซึ่งมีช่องว่างในตัวไฟล์ภาพ เลยดูต่ำกว่าทั้งที่ขอบบนตรงกัน */
+  .footer-brand {
+    margin-top: -0.75rem;
+  }
+
+  .footer-bottom {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
   }
 }
 
 /* ---- Desktop ---- */
 @media (min-width: 1024px) {
   .footer-grid {
-    grid-template-columns: 1.1fr 1fr;
-    gap: 5rem;
+    /* คอลัมน์ซ้ายกว้างขึ้นเล็กน้อย + เว้นกลางมากขึ้น = คอลัมน์ CONTACT ขยับไปทางขวา */
+    grid-template-columns: 1.25fr 1fr;
+    gap: 7rem;
+  }
+
+  .footer-rule {
+    max-width: 7rem;
   }
 }

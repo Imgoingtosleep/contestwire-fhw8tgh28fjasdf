@@ -18,10 +18,14 @@ export default function Footer() {
     <footer className="footer">
       <section className="footer-partners">
         <div className="container">
-          <h2 className="footer-partners-title">PARTNERS</h2>
+          <h2 className="footer-partners-title">
+            <span className="footer-rule" aria-hidden="true" />
+            PARTNERS
+            <span className="footer-rule" aria-hidden="true" />
+          </h2>
           <ul className="footer-partners-list">
             {PARTNERS.map((p) => (
-              <li key={p.id}>
+              <li key={p.id} className="footer-partner">
                 <img src={p.src} alt={p.alt} loading="lazy" />
               </li>
             ))}
@@ -45,33 +49,28 @@ export default function Footer() {
           <div className="footer-contact">
             <h3 className="footer-contact-title">CONTACT</h3>
 
-            <p className="footer-contact-row">
-              <svg
-                className="footer-contact-icon"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.24.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" />
-              </svg>
-              <span>
-                <a href={`tel:${site.phone.replace(/-/g, "")}`}>{site.phone}</a>
-                <br />
-                {site.callCenter}
+            <div className="footer-contact-row">
+              <span className="footer-contact-chip" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.24.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" />
+                </svg>
               </span>
-            </p>
+              <span className="footer-contact-text">
+                <a href={`tel:${site.phone.replace(/-/g, "")}`}>{site.phone}</a>
+                <span className="footer-contact-sub">{site.callCenter}</span>
+              </span>
+            </div>
 
-            <p className="footer-contact-row">
-              <svg
-                className="footer-contact-icon"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4.24l-8 4.76-8-4.76V6l8 4.76L20 6v2.24z" />
-              </svg>
-              <a href={`mailto:${site.email}`}>{site.email}</a>
-            </p>
+            <div className="footer-contact-row">
+              <span className="footer-contact-chip" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4.24l-8 4.76-8-4.76V6l8 4.76L20 6v2.24z" />
+                </svg>
+              </span>
+              <span className="footer-contact-text">
+                <a href={`mailto:${site.email}`}>{site.email}</a>
+              </span>
+            </div>
 
             <ul className="footer-social">
               {site.social.map((s) => (
@@ -88,6 +87,13 @@ export default function Footer() {
               ))}
             </ul>
           </div>
+        </div>
+
+        <div className="container footer-bottom">
+          <p className="footer-copyright">
+            © {new Date().getFullYear() + 543} {site.company}
+          </p>
+          <p className="footer-tagline">โครงการโตโยต้า ถนนสีขาว</p>
         </div>
       </div>
     </footer>
