@@ -1,17 +1,20 @@
 /* ==========================================================================
    Global Styles — โตโยต้า ถนนสีขาว (Toyota Road Safety)
    Design tokens ดึงจาก Figma: rdYH3WhgD6kAgkSflzmRuE
-   Typography: Helvetica ทั้งเว็บ + Sarabun รับช่วงกลีฟภาษาไทย (ฟอนต์ตามไฟล์ Figma)
+   Typography: Helvetica สำหรับภาษาอังกฤษ + Prompt สำหรับภาษาไทย
    Mobile-first: base = mobile แล้วขยายด้วย @media (min-width: ...)
    ========================================================================== */
 
-@import url("https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap");
 
 :root {
-  /* ---- ฟอนต์: Helvetica ทั้งเว็บ ----
-     Helvetica ไม่มีกลีฟภาษาไทย จึงให้ Sarabun (ฟอนต์ที่ใช้จริงในไฟล์ Figma)
-     รับช่วงเฉพาะตัวอักษรไทย — เบราว์เซอร์ fallback ทีละตัวอักษร */
-  --font-base: "Helvetica Neue", Helvetica, Arial, "Sarabun", sans-serif;
+  /* ---- ฟอนต์: Helvetica = อังกฤษ / Prompt = ไทย ----
+     เบราว์เซอร์เลือกฟอนต์ทีละตัวอักษร ไม่ใช่ทีละบล็อก ลำดับนี้จึงทำให้
+     อักษรละตินได้ Helvetica ส่วนอักษรไทยตกมาที่ Prompt เองโดยไม่ต้องแยก class
+
+     Prompt ต้องมาก่อน Arial เพราะ Arial บนวินโดวส์มีกลีฟไทยติดมาด้วย
+     ถ้าวางไว้หลัง Arial ภาษาไทยจะไปจบที่ Arial แทนที่จะเป็น Prompt */
+  --font-base: "Helvetica Neue", Helvetica, "Prompt", Arial, sans-serif;
   --font-head: var(--font-base);
   --font-body: var(--font-base);
 
