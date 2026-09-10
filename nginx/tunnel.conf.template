@@ -1,0 +1,77 @@
+# ==============================================================================
+# Nginx (หลัง Cloudflare Tunnel) — เสิร์ฟไฟล์นิ่งของ React + reverse proxy ไป backend
+#
+# ต่างจาก prod.conf.template ตรงที่ไม่มี block TLS และไม่มี redirect ไป https
+# เพราะ TLS ถูกปิดจ็อบที่ edge แล้ว ตัว nginx รับ HTTP ธรรมดาจาก cloudflared
+# ผ่านเครือข่ายภายในของ Docker เท่านั้น (ไม่ได้ผูกพอร์ตออกสู่โฮสต์)
+#
+# ตัวแปร ${...} ถูกแทนค่าตอนคอนเทนเนอร์สตาร์ต จาก environment ของ service "web"
+# ==============================================================================
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    # โดเมนจะเปลี่ยนไปเรื่อย ๆ เมื่อใช้ quick tunnel จึงรับทุกชื่อโฮสต์
+    server_name _;
+
+    # ---- Security headers ----
+    # ไม่ใส่ HSTS ที่นี่ ปล่อยให้ตั้งจากฝั่ง edge แทน เพราะ nginx ตัวนี้พูด HTTP
+    add_header X-Content-Type-Options    "nosniff" always;
+    add_header X-Frame-Options           "SAMEORIGIN" always;
+    add_header Referrer-Policy           "strict-origin-when-cross-origin" always;
+
+    # ---- Compression ----
+    gzip              on;
+    gzip_vary         on;
+    gzip_min_length   1024;
+    gzip_proxied      any;
+    gzip_types        text/plain text/css application/javascript application/json
+                      image/svg+xml font/woff font/woff2;
+
+    root  /usr/share/nginx/html;
+    index index.html;
+
+    # ---- Backend API ----
+    location /api {
+        # resolve ชื่อ backend ตอนมีคำขอเข้ามา ไม่ใช่ตอนโหลดคอนฟิก
+        # nginx จึงบูตได้เสมอแม้ backend ยังไม่พร้อม (เหตุผลเดียวกับ prod.conf.template)
+        resolver 127.0.0.11 valid=10s ipv6=off;
+        set $upstream_backend http://backend:9100;
+        proxy_pass $upstream_backend$request_uri;
+
+        proxy_http_version 1.1;
+        proxy_set_header Host              $host;
+
+        # IP จริงของผู้ใช้มากับ CF-Connecting-IP ที่ edge ใส่ให้
+        # ถ้าอ่าน $remote_addr จะได้ IP ของคอนเทนเนอร์ cloudflared เสมอ
+        proxy_set_header X-Real-IP         $http_cf_connecting_ip;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+
+        # ผู้ใช้เข้าผ่าน https เสมอ แม้ขาในนี้จะเป็น http
+        proxy_set_header X-Forwarded-Proto https;
+
+        # ต้องไม่น้อยกว่า MAX_UPLOAD_SIZE_MB ของ backend ไม่งั้น nginx ตัดก่อน
+        client_max_body_size ${MAX_UPLOAD_SIZE_MB}m;
+
+        proxy_connect_timeout 60s;
+        proxy_send_timeout    300s;
+        proxy_read_timeout    300s;
+    }
+
+    # ---- ไฟล์ที่มี hash ในชื่อ แคชได้ยาว ----
+    location /static/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # ---- SPA: ทุกเส้นทางตกมาที่ index.html ให้ react-router จัดการ ----
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # index.html ห้ามแคช ไม่งั้น deploy ใหม่แล้วผู้ใช้ยังได้ bundle เก่า
+    location = /index.html {
+        add_header Cache-Control "no-cache, must-revalidate";
+    }
+}

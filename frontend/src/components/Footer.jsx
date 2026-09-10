@@ -20,10 +20,14 @@ export default function Footer() {
         <div className="container">
           <h2 className="footer-partners-title">
             <span className="footer-rule" aria-hidden="true" />
-            PARTNERS
+            ORGANIZED BY
             <span className="footer-rule" aria-hidden="true" />
           </h2>
           <ul className="footer-partners-list">
+            {/* โลโก้เจ้าของโครงการมาก่อนและคงสีเต็ม ส่วนที่เหลือเป็นภาคีจึงลดน้ำหนักลง */}
+            <li className="footer-partner footer-partner--brand">
+              <img src={logo} alt="โตโยต้า ถนนสีขาว" loading="lazy" />
+            </li>
             {PARTNERS.map((p) => (
               <li key={p.id} className="footer-partner">
                 <img src={p.src} alt={p.alt} loading="lazy" />
@@ -35,20 +39,13 @@ export default function Footer() {
 
       <div className="footer-main">
         <div className="container footer-grid">
-          <div className="footer-brand">
-            <img
-              src={logo}
-              alt="โตโยต้า ถนนสีขาว"
-              className="footer-logo"
-              loading="lazy"
-            />
+          <div className="footer-col">
+            <h3 className="footer-col-title">CONTACT</h3>
             <p className="footer-company">{site.company}</p>
             <p className="footer-address">{site.address}</p>
           </div>
 
-          <div className="footer-contact">
-            <h3 className="footer-contact-title">CONTACT</h3>
-
+          <div className="footer-col">
             <div className="footer-contact-row">
               <span className="footer-contact-chip" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="currentColor">
@@ -71,7 +68,10 @@ export default function Footer() {
                 <a href={`mailto:${site.email}`}>{site.email}</a>
               </span>
             </div>
+          </div>
 
+          <div className="footer-col">
+            <h3 className="footer-col-title">FOLLOW</h3>
             <ul className="footer-social">
               {site.social.map((s) => (
                 <li key={s.id}>

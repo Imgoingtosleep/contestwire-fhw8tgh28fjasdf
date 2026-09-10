@@ -1,0 +1,108 @@
+# ==============================================================================
+# Tunnel stack — เปิดเว็บให้คนนอกเข้าดูได้โดยยังไม่ต้องมีโดเมนและไม่ต้องมีบัญชี
+#
+#   docker compose -f docker-compose.tunnel.yml --env-file .env.tunnel up -d --build
+#   ./scripts/tunnel-url.sh          # ดู URL ที่ได้
+#
+# ต่างจาก docker-compose.prod.yml ตรงที่:
+#   - ไม่มี certbot และไม่มี 443 เพราะ TLS จบที่ edge ของ Cloudflare
+#   - ไม่ผูกพอร์ตใด ๆ ออกสู่โฮสต์เลย ทางเข้าเดียวคือ tunnel ที่เปิดออกจากข้างใน
+#   - cloudflared แบบ quick tunnel ไม่ต้องล็อกอิน แต่ URL เปลี่ยนทุกครั้งที่รีสตาร์ต
+#     เมื่อมีโดเมนแล้วให้เปลี่ยนไปใช้ TUNNEL_TOKEN (ดูหมายเหตุที่ service cloudflared)
+# ==============================================================================
+
+# ตั้งชื่อโปรเจกต์แยกจาก dev stack ไม่งั้น docker จะมองว่าเป็นชุดเดียวกัน
+# (ชื่อ service ซ้ำกัน) แล้วไปรีเครทคอนเทนเนอร์ของ docker-compose.yml ทิ้ง
+# แยกชื่อแล้วสองชุดจะมีคอนเทนเนอร์ เครือข่าย และ volume ฐานข้อมูลของตัวเอง
+name: contestwire-tunnel
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: rs_tunnel_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend.prod
+    container_name: rs_tunnel_backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=9100
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - MAX_UPLOAD_SIZE_MB=${MAX_UPLOAD_SIZE_MB}
+      - R2_ACCOUNT_ID=${R2_ACCOUNT_ID}
+      - R2_ACCESS_KEY_ID=${R2_ACCESS_KEY_ID}
+      - R2_SECRET_ACCESS_KEY=${R2_SECRET_ACCESS_KEY}
+      - R2_BUCKET_NAME=${R2_BUCKET_NAME}
+      - R2_PUBLIC_URL=${R2_PUBLIC_URL}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - internal
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend.prod
+      args:
+        # เทมเพลต nginx แบบ HTTP อย่างเดียว เพราะ TLS จบที่ edge ไปแล้ว
+        NGINX_TEMPLATE: nginx/tunnel.conf.template
+        # CRA ฝังค่าตอน build — เปลี่ยนค่าแล้วต้อง --build ใหม่เสมอ
+        REACT_APP_API_URL: ${REACT_APP_API_URL}
+        REACT_APP_SITE_NAME: ${REACT_APP_SITE_NAME}
+    container_name: rs_tunnel_web
+    restart: unless-stopped
+    environment:
+      - MAX_UPLOAD_SIZE_MB=${MAX_UPLOAD_SIZE_MB}
+    depends_on:
+      - backend
+    networks:
+      - internal
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: rs_tunnel_cloudflared
+    restart: unless-stopped
+    # quick tunnel: ไม่ต้องมีบัญชี ไม่ต้องมีโดเมน ได้ URL *.trycloudflare.com
+    # ชั่วคราวที่เปลี่ยนใหม่ทุกครั้งที่คอนเทนเนอร์รีสตาร์ต
+    #
+    # เมื่อย้าย DNS ของโดเมนมาที่ Cloudflare แล้ว ให้เปลี่ยนบรรทัด command
+    # เป็นแบบมี token (URL จะคงที่และผูกกับโดเมนจริง):
+    #   command: tunnel --no-autoupdate --metrics 0.0.0.0:2000 run --token ${TUNNEL_TOKEN}
+    #
+    # --metrics เปิดไว้ให้ scripts/tunnel-url.sh อ่าน URL ได้จากตัว cloudflared เอง
+    command: tunnel --no-autoupdate --metrics 0.0.0.0:2000 --url http://web:80
+    depends_on:
+      - web
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+
+networks:
+  internal:

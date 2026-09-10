@@ -1,11 +1,11 @@
-/* Footer — Figma "Footer" (PARTNERS บนพื้น #F9F8F8 + แถบล่างโทนฟ้าอ่อน)
+/* Footer — Figma "Footer" (ORGANIZED BY บนพื้น #F9F8F8 + แถบล่างโทนฟ้าอ่อน)
    Mobile-first: base = mobile แล้วขยายด้วย @media (min-width: ...) */
 
 .footer {
   margin-top: auto;
 }
 
-/* เส้นคั่นสองข้างหัวข้อ PARTNERS */
+/* เส้นคั่นสองข้างหัวข้อ ORGANIZED BY */
 .footer-rule {
   height: 1px;
   flex: 1 1 auto;
@@ -13,7 +13,7 @@
   background: var(--color-line);
 }
 
-/* ---- PARTNERS ---- */
+/* ---- ORGANIZED BY ---- */
 
 .footer-partners {
   background: var(--color-offwhite);
@@ -72,6 +72,13 @@
   opacity: 1;
 }
 
+/* โลโก้เจ้าของโครงการ: ใช้ grayscale เหมือนโลโก้อื่นเพื่อให้ทั้งแถวดูเป็นชุดเดียวกัน
+   ต่างแค่ให้สูงกว่าเล็กน้อย เพราะเป็น wordmark แนวนอน ไม่ใช่ตราวงกลม
+   ตัวอักษรจึงเล็กกว่าเมื่อคุมความสูงเท่ากัน */
+.footer-partner--brand img {
+  height: clamp(3.25rem, 2.4rem + 3vw, 6rem);
+}
+
 /* ---- แถบล่าง ---- */
 
 .footer-main {
@@ -89,38 +96,15 @@
   gap: 2.5rem;
 }
 
-.footer-logo {
-  width: clamp(10rem, 8rem + 8vw, 16.6875rem);
-  height: auto;
-  margin-top: 0.25rem;
-  margin-bottom: 1.25rem;
-}
+/* ---- คอลัมน์ ---- */
 
-.footer-company {
-  font-size: var(--text-sm);
-  font-weight: 600;
-  line-height: 1.6;
-  color: var(--color-ink);
-  margin-bottom: 0.25rem;
-}
-
-.footer-address {
-  font-size: var(--text-xs);
-  line-height: 1.8;
-  color: var(--color-gray);
-  margin-bottom: 0.25rem;
-  white-space: pre-line;
-}
-
-/* ---- CONTACT ---- */
-
-.footer-contact {
+.footer-col {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
-.footer-contact-title {
+.footer-col-title {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -131,6 +115,26 @@
   /* หัวข้อเป็น heading จึงเว้นมากกว่าระยะระหว่างบรรทัดเล็กน้อย */
   margin-bottom: 0.25rem;
 }
+
+/* margin ของ p ถูกล้าง ปล่อยให้ gap ของ .footer-col คุมระยะแทน
+   ไม่งั้นระยะจะเป็น margin + gap ซ้อนกันจนห่างเกิน */
+.footer-company {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.footer-address {
+  font-size: var(--text-xs);
+  line-height: 1.8;
+  color: var(--color-gray);
+  margin: 0;
+  white-space: pre-line;
+}
+
+/* ---- ช่องทางติดต่อ ---- */
 
 .footer-contact-row {
   display: flex;
@@ -189,6 +193,7 @@
 
 .footer-social {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.625rem;
 }
@@ -225,9 +230,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
-  /* คอลัมน์ซ้าย (โลโก้+ที่อยู่) สูงกว่าคอลัมน์ขวา ระยะนี้จึงวัดจากท้ายที่อยู่
-     ต้องเว้นให้พอ ไม่งั้นเส้นคั่นจะไปชิดบรรทัดที่อยู่ */
-  margin-top: clamp(4rem, 3rem + 5vw, 7rem);
+  /* สามคอลัมน์สูงไม่เท่ากัน ระยะนี้วัดจากคอลัมน์ที่ยาวที่สุด (ที่อยู่)
+     ต้องเว้นให้พอ ไม่งั้นเส้นคั่นจะไปชิดบรรทัดสุดท้าย */
+  margin-top: clamp(2.5rem, 2rem + 3vw, 4.5rem);
   padding-top: 1.75rem;
   padding-bottom: 1.75rem;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
@@ -242,16 +247,16 @@
 
 /* ---- Tablet ---- */
 @media (min-width: 768px) {
+  /* สองคอลัมน์ก่อน: CONTACT ยาวกว่าเพื่อน จึงกินเต็มแถวบน
+     แล้วเบอร์กับโซเชียลแบ่งกันแถวล่าง */
   .footer-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    gap: 2.5rem 3rem;
     align-items: start;
   }
 
-  /* ชดเชยสายตา: คอลัมน์ขวาเริ่มด้วยตัวอักษรเล็ก ส่วนซ้ายเริ่มด้วยโลโก้
-     ซึ่งมีช่องว่างในตัวไฟล์ภาพ เลยดูต่ำกว่าทั้งที่ขอบบนตรงกัน */
-  .footer-brand {
-    margin-top: -0.75rem;
+  .footer-col:first-child {
+    grid-column: 1 / -1;
   }
 
   .footer-bottom {
@@ -264,10 +269,15 @@
 
 /* ---- Desktop ---- */
 @media (min-width: 1024px) {
+  /* สามคอลัมน์: ที่อยู่ | เบอร์+อีเมล | โซเชียล
+     คอลัมน์แรกกว้างกว่าเพราะมีที่อยู่เต็ม คอลัมน์สุดท้ายแคบสุดเพราะมีแค่ไอคอน */
   .footer-grid {
-    /* คอลัมน์ซ้ายกว้างขึ้นเล็กน้อย + เว้นกลางมากขึ้น = คอลัมน์ CONTACT ขยับไปทางขวา */
-    grid-template-columns: 1.25fr 1fr;
-    gap: 7rem;
+    grid-template-columns: 1.5fr 1fr 0.75fr;
+    gap: clamp(2.5rem, 1rem + 4vw, 5rem);
+  }
+
+  .footer-col:first-child {
+    grid-column: auto;
   }
 
   .footer-rule {

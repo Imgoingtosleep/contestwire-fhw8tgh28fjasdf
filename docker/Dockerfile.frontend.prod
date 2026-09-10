@@ -29,7 +29,12 @@ FROM nginx:1.27-alpine
 
 # เทมเพลตถูกแทนค่าตัวแปรตอนคอนเทนเนอร์สตาร์ต (กลไก envsubst ของอิมเมจ nginx เอง
 # ซึ่งแทนเฉพาะชื่อที่มีอยู่จริงใน environment ตัวแปรของ nginx อย่าง $host จึงไม่โดน)
-COPY nginx/prod.conf.template /etc/nginx/templates/default.conf.template
+#
+# เลือกเทมเพลตได้ตอน build:
+#   nginx/prod.conf.template   = VPS + โดเมนของตัวเอง + ใบรับรองจาก certbot (ค่าตั้งต้น)
+#   nginx/tunnel.conf.template = อยู่หลัง Cloudflare Tunnel รับ HTTP อย่างเดียว
+ARG NGINX_TEMPLATE=nginx/prod.conf.template
+COPY ${NGINX_TEMPLATE} /etc/nginx/templates/default.conf.template
 COPY --from=build /app/build /usr/share/nginx/html
 
 EXPOSE 80 443
