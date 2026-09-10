@@ -8,8 +8,13 @@ function formatNumber(n) {
   return n.toLocaleString("th-TH");
 }
 
-/** ตัวเลขวิ่งของสถิติรวมด้านบน */
-function HeadlineCounter({ value, countFrom, suffix, baseline, active }) {
+/**
+ * ตัวเลขวิ่งของสถิติรวมด้านบน
+ *
+ * ไม่แสดงบรรทัดฐาน "จาก X ในปี YYYY" ที่นี่แล้ว เพราะบล็อกเทียบก่อน/หลัง
+ * ด้านล่างบอกตัวเลขคู่เดียวกันอยู่ ปล่อยไว้ทั้งคู่คือพูดเรื่องเดิมซ้ำสองรอบ
+ */
+function HeadlineCounter({ value, countFrom, suffix, active }) {
   const [current, done] = useCountUp(value, active, 2400, countFrom);
   return (
     <p className="road-stats-headline-value">
@@ -19,16 +24,16 @@ function HeadlineCounter({ value, countFrom, suffix, baseline, active }) {
         {formatNumber(current)}
       </span>
       <span className="road-stats-headline-suffix">{suffix}</span>
-      {baseline && (
-        <span className="road-stats-headline-baseline">{baseline}</span>
-      )}
     </p>
   );
 }
 
 /**
- * การ์ดเทียบก่อน/หลัง — ใช้ countFrom เป็นฐานปี 2562 และ value เป็นผลปีล่าสุด
- * แถบด้านล่างยาวตามสัดส่วนของตัวเลขจริง ไม่ใช่ค่าที่ hardcode ไว้
+ * เทียบก่อน/หลัง — ก้อนเดียว ไม่ใช่การ์ดสองใบ
+ *
+ * แถบเต็มความยาวคือตัวเลขปีฐาน (countFrom) ส่วนที่ระบายสีคือตัวเลขปีล่าสุด (value)
+ * ทั้งสองค่าจึงอยู่บนสเกลเดียวกันจริง ๆ ผู้อ่านเห็นสัดส่วนได้จากความยาวโดยตรง
+ * ไม่ต้องอ่านตัวเลขก่อนถึงจะเข้าใจ
  */
 function ComparePair({ headline, active }) {
   const { countFrom, value, suffix } = headline;
@@ -37,41 +42,40 @@ function ComparePair({ headline, active }) {
   const drop = countFrom > 0 ? (1 - ratio) * 100 : 0;
 
   return (
-    <div className="road-compare">
-      <div className="road-compare-card road-compare-before">
-        <p className="road-compare-era">ปี 2562 — ก่อนโครงการเข้าพื้นที่</p>
-        <p className="road-compare-value">
-          {formatNumber(countFrom)}
-          <small>{suffix}</small>
-        </p>
-        <div className="road-compare-bar">
-          <span className="road-compare-fill is-before" />
+    <figure className="road-compare">
+      <div className="road-compare-head">
+        <div className="road-compare-side">
+          <span className="road-compare-era">ปี 2562 ก่อนโครงการ</span>
+          <span className="road-compare-value">
+            {formatNumber(countFrom)}
+            <small>{suffix}</small>
+          </span>
         </div>
-      </div>
 
-      <div className="road-compare-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="13 6 19 12 13 18" />
-        </svg>
-      </div>
-
-      <div className="road-compare-card road-compare-after">
-        <p className="road-compare-era">ปี 2569 — หลังโครงการเข้าพื้นที่</p>
-        <p className={`road-compare-value${afterDone ? " is-count-done" : ""}`}>
-          {formatNumber(after)}
-          <small>{suffix}</small>
-        </p>
-        <div className="road-compare-bar">
-          {/* ส่งเฉพาะ "ค่า" ผ่าน custom property — การตกแต่งทั้งหมดยังอยู่ใน CSS */}
+        <div className="road-compare-side is-after">
+          <span className="road-compare-era">ปี 2569 หลังโครงการ</span>
           <span
-            className="road-compare-fill is-after"
-            style={{ "--compare-ratio": active ? ratio : 1 }}
-          />
+            className={`road-compare-value${afterDone ? " is-count-done" : ""}`}
+          >
+            {formatNumber(after)}
+            <small>{suffix}</small>
+          </span>
         </div>
-        <p className="road-compare-drop">ลดลง {drop.toFixed(1)}%</p>
       </div>
-    </div>
+
+      <div className="road-compare-track">
+        {/* ส่งเฉพาะ "ค่า" ผ่าน custom property — การตกแต่งทั้งหมดยังอยู่ใน CSS */}
+        <span
+          className="road-compare-fill"
+          style={{ "--compare-ratio": active ? ratio : 1 }}
+        />
+      </div>
+
+      <figcaption className="road-compare-drop">
+        <strong>{drop.toFixed(1)}%</strong>
+        <span>ลดลงจากปี 2562</span>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -136,7 +140,6 @@ export default function RoadStats() {
             value={headline.value}
             countFrom={headline.countFrom}
             suffix={headline.suffix}
-            baseline={headline.baseline}
             active={inView}
           />
           <p className="road-stats-headline-note">{headline.note}</p>
