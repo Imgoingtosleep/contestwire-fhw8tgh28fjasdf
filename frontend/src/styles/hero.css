@@ -4,7 +4,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  min-height: clamp(20rem, 14rem + 30vw, 37.5rem); /* Figma 600px */
+  /* Figma วางไว้ 600px แต่บนจอจริงกินพื้นที่จนเนื้อหาถัดไปตกขอบล่าง
+     จึงลดเหลือ ~400px บนเดสก์ท็อป และ ~220px บนมือถือ */
+  min-height: clamp(13.75rem, 10rem + 17vw, 25rem);
   overflow: hidden;
   background: #6b7a80;
 }
@@ -32,8 +34,8 @@
 .hero-inner {
   position: relative;
   z-index: 1;
-  padding-top: clamp(2rem, 1.5rem + 3vw, 3.25rem);
-  padding-bottom: clamp(2rem, 1.5rem + 3vw, 3.25rem);
+  padding-top: clamp(1.5rem, 1.2rem + 2vw, 2.5rem);
+  padding-bottom: clamp(1.5rem, 1.2rem + 2vw, 2.5rem);
 }
 
 .hero-title {
@@ -43,7 +45,7 @@
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.01em;
-  margin-bottom: clamp(1rem, 0.75rem + 1.5vw, 2rem);
+  margin-bottom: clamp(0.75rem, 0.6rem + 1vw, 1.25rem);
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
 }
 
@@ -69,7 +71,7 @@
   line-height: 1.55;
   color: var(--color-white);
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
-  margin-bottom: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+  margin-bottom: clamp(1.25rem, 1rem + 1.5vw, 2rem);
 }
 
 .hero-cta {

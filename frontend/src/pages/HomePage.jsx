@@ -54,17 +54,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---- วิดีโอแนะนำโครงการ : เต็มความกว้าง ---- */}
-      <section className="home-video-section">
+      {/* ---- วิดีโอแนะนำโครงการ ---- */}
+      <section className="section section-cream home-video-section">
+        <div className="container">
+          <Reveal className="section-head section-head-center">
+            <h2 className="section-title">{site.video.title}</h2>
+            <p className="section-subtitle">{site.video.caption}</p>
+          </Reveal>
+        </div>
+
         <Reveal className="home-video">
           <VideoPlayer
             poster={videoThumb}
             posterAlt="วิดีโอแนะนำโครงการโตโยต้า ถนนสีขาว"
             title={site.video.title}
-            caption={site.video.caption}
             duration={site.video.duration}
             youtubeId={site.video.youtubeId}
             href={site.social.find((s) => s.id === "youtube").url}
+            showCaption={false}
           />
         </Reveal>
       </section>

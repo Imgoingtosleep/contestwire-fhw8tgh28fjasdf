@@ -15,6 +15,12 @@
   box-shadow: var(--shadow-md);
 }
 
+/* เมื่อฝัง iframe ห้ามยกตัวตอน hover — ตัวเล่นจะขยับหนีมือตอนผู้ใช้
+   เอื้อมไปกดปุ่มของ YouTube เก็บไว้แค่เงาที่เข้มขึ้น */
+.video-player--embed:hover {
+  transform: none;
+}
+
 .video-player-frame {
   position: relative;
   aspect-ratio: 16 / 9;

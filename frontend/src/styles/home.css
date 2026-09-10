@@ -10,34 +10,20 @@
 
 /* ---- วิดีโอเต็มความกว้าง ---- */
 
-.home-video-section {
-  padding: 0;
-}
-
+/* เดิมเป็นวิดีโอเต็มขอบจอ ซึ่งที่ 1440px คิดเป็นสูงถึง 810px (16:9)
+   กินหน้าจอทั้งจอจนส่วนอื่นตกไปหมด จึงคุมความกว้างไว้ที่ 60rem
+   เหลือความสูงราว 540px และวางเป็นการ์ดเหมือนบล็อกอื่นในหน้า */
 .home-video {
-  margin: 0;
-}
-
-/* เต็มขอบจอ จึงไม่ต้องมีมุมมน เงา หรือการยกตัวตอน hover */
-.home-video .video-player,
-.home-video .video-player:hover {
-  border-radius: 0;
-  box-shadow: none;
-  transform: none;
-}
-
-.home-video .video-player-caption {
-  max-width: var(--container-max);
+  width: 100%;
+  max-width: 60rem;
   margin: 0 auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding: 0 1.25rem;
 }
 
 /* ---- Tablet ---- */
 @media (min-width: 768px) {
-  .home-video .video-player-caption {
-    padding-left: 2rem;
-    padding-right: 2rem;
+  .home-video {
+    padding: 0 2rem;
   }
 }
 
@@ -55,8 +41,7 @@
     box-shadow: var(--shadow-md);
   }
 
-  .home-video .video-player-caption {
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
+  .home-video {
+    padding: 0 2.5rem;
   }
 }
