@@ -13,19 +13,36 @@ function formatDate(value) {
   });
 }
 
-export default function NewsCard({ item }) {
+/**
+ * การ์ดบทความ
+ *
+ * featured = การ์ดเด่นของบทความล่าสุด กินเต็มความกว้างของกริด
+ * วางภาพครึ่งซ้าย เนื้อหาครึ่งขวา (บนจอเล็กเรียงบนล่างเหมือนการ์ดปกติ)
+ *
+ * หมวดหมู่มาจาก item.category ถ้าไฟล์ข่าวไม่ได้ระบุไว้จะใช้ "ข่าวสาร"
+ * จึงเพิ่มฟิลด์นี้ในไฟล์ news-XXX.js เมื่อไหร่ก็ได้ ไม่กระทบข่าวเดิม
+ */
+export default function NewsCard({ item, featured = false }) {
   const [coverFailed, setCoverFailed] = useState(false);
   const showCover = Boolean(item.cover) && !coverFailed;
+  const category = item.category || "ข่าวสาร";
 
   return (
-    <Link to={`/articles/${item.id}`} className="news-card cream-card">
+    <Link
+      to={`/articles/${item.id}`}
+      className={
+        featured
+          ? "news-card news-card--featured cream-card"
+          : "news-card cream-card"
+      }
+    >
       <div className="news-card-media">
         {showCover ? (
           <img
             src={item.cover}
             alt={item.title}
             className="news-card-image"
-            loading="lazy"
+            loading={featured ? "eager" : "lazy"}
             onError={() => setCoverFailed(true)}
           />
         ) : (
@@ -36,10 +53,31 @@ export default function NewsCard({ item }) {
       </div>
 
       <div className="news-card-body">
-        <span className="news-card-date">{formatDate(item.date)}</span>
+        <div className="news-card-meta">
+          <span className="news-card-tag">{category}</span>
+          <time className="news-card-date" dateTime={item.date}>
+            {formatDate(item.date)}
+          </time>
+        </div>
+
         <h3 className="news-card-title">{item.title}</h3>
         <p className="news-card-summary">{item.summary}</p>
-        <span className="news-card-more">อ่านต่อ &rarr;</span>
+
+        <span className="news-card-more">
+          อ่านต่อ
+          <svg
+            className="news-card-arrow"
+            viewBox="0 0 16 9"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M0 4.5h14M10.5 1 14 4.5 10.5 8"
+              stroke="currentColor"
+              strokeWidth="1.6"
+            />
+          </svg>
+        </span>
       </div>
     </Link>
   );
