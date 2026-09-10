@@ -7,6 +7,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 
 const { initDB, pool } = require("./config/db");
+const { isContestOpen, requireContestOpen } = require("./config/features");
 const contestRoutes = require("./routes/contest.routes");
 const uploadRoutes = require("./routes/upload.routes");
 
@@ -53,6 +54,7 @@ app.get("/api/health", async (req, res) => {
           process.env.R2_SECRET_ACCESS_KEY &&
           process.env.R2_BUCKET_NAME
       ),
+      contestOpen: isContestOpen(),
     });
   } catch (err) {
     res.status(500).json({
@@ -63,8 +65,9 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-app.use("/api/contest", contestRoutes);
-app.use("/api/upload", uploadRoutes);
+// ปิดทุกเส้นทางที่รับหรือคืนข้อมูลผู้สมัครไว้ที่ชั้นนี้ชั้นเดียว (ดู config/features.js)
+app.use("/api/contest", requireContestOpen, contestRoutes);
+app.use("/api/upload", requireContestOpen, uploadRoutes);
 
 // 404 handler
 app.use((req, res) => {

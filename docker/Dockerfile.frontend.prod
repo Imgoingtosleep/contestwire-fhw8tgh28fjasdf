@@ -18,8 +18,11 @@ COPY frontend/ ./
 # CRA ฝังค่า REACT_APP_* ตอน build ไม่ใช่ตอนรัน จึงต้องส่งเข้ามาเป็น build arg
 ARG REACT_APP_API_URL=/api
 ARG REACT_APP_SITE_NAME
+# ค่าตั้งต้นเป็น false เพื่อไม่ให้เผลอ build ตัวที่เปิดรับข้อมูลออกไปโดยไม่ตั้งใจ
+ARG REACT_APP_CONTEST_OPEN=false
 ENV REACT_APP_API_URL=$REACT_APP_API_URL \
     REACT_APP_SITE_NAME=$REACT_APP_SITE_NAME \
+    REACT_APP_CONTEST_OPEN=$REACT_APP_CONTEST_OPEN \
     GENERATE_SOURCEMAP=false
 
 RUN npm run build

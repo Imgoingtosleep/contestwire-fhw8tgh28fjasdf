@@ -52,6 +52,7 @@ services:
       - R2_BUCKET_NAME=${R2_BUCKET_NAME}
       - R2_PUBLIC_URL=${R2_PUBLIC_URL}
       - NODE_ENV=${NODE_ENV}
+      - CONTEST_OPEN=${CONTEST_OPEN}
       # hot reload: nodemon ใช้ chokidar — ต้อง poll เมื่อ bind mount ข้ามระบบไฟล์
       - CHOKIDAR_USEPOLLING=${WATCH_POLLING}
       - CHOKIDAR_INTERVAL=${WATCH_INTERVAL}
@@ -79,6 +80,7 @@ services:
       - PORT=${FRONTEND_PORT}
       - REACT_APP_API_URL=${REACT_APP_API_URL}
       - REACT_APP_SITE_NAME=${REACT_APP_SITE_NAME}
+      - REACT_APP_CONTEST_OPEN=${REACT_APP_CONTEST_OPEN}
       # hot reload: webpack-dev-server (CRA 5) — WATCHPACK สำหรับ webpack, CHOKIDAR สำหรับ dev server
       - WATCHPACK_POLLING=${WATCH_POLLING}
       - CHOKIDAR_USEPOLLING=${WATCH_POLLING}
