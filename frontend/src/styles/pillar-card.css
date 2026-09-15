@@ -11,6 +11,39 @@
   box-shadow: var(--shadow-md);
 }
 
+/* ---- การ์ดที่ผูกกับ PillarCube (หน้าแรก) ---- */
+.pillar-card-interactive {
+  position: relative;
+  cursor: pointer;
+}
+
+.pillar-card-interactive:focus-visible {
+  outline: 3px solid var(--color-blue);
+  outline-offset: 3px;
+}
+
+/* แถบแดงใต้การ์ดที่ตรงกับหน้าลูกบาศก์ขณะนั้น */
+.pillar-card-interactive::after {
+  content: "";
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  bottom: 0;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-red);
+  transform: scaleX(0);
+  transition: transform var(--transition);
+}
+
+.pillar-card-interactive.is-active {
+  transform: translateY(-4px);
+}
+
+.pillar-card-interactive.is-active::after {
+  transform: scaleX(1);
+}
+
 .pillar-card-body {
   display: flex;
   flex-direction: column;

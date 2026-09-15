@@ -1,0 +1,108 @@
+/* ลูกบาศก์ 3 มิติ "คนเซฟ / รถเซฟ / ถนนเซฟ" — หัวข้อ ROAD SAFETY หน้าแรก
+   หมุนด้วย transform + transition (ไม่ใช้ keyframes) เพื่อให้เปลี่ยนหน้าได้ลื่นจากทุกมุม
+   Mobile-first: base = mobile แล้วขยายด้วย @media (min-width: ...) */
+
+.pillar-cube-scene {
+  --cube-size: 5.5rem;
+  --cube-half: calc(var(--cube-size) / 2);
+  /* เอียงเล็กน้อยให้เห็นสันลูกบาศก์ ไม่ใช่แค่สี่เหลี่ยมแบน */
+  --cube-tilt: rotateX(-16deg) rotateY(-22deg);
+
+  width: var(--cube-size);
+  height: var(--cube-size);
+  margin: 0 auto clamp(1.25rem, 1rem + 1vw, 2rem);
+  perspective: 700px;
+}
+
+.pillar-cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---- การหมุนไปยังด้านหลักของแต่ละเสาหลัก ---- */
+.pillar-cube-show-front { transform: var(--cube-tilt); }
+.pillar-cube-show-right { transform: var(--cube-tilt) rotateY(-90deg); }
+.pillar-cube-show-top   { transform: var(--cube-tilt) rotateX(-90deg); }
+
+/* ---- หน้าลูกบาศก์ ---- */
+.pillar-cube-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  background: var(--color-cream);
+  border: 2px solid var(--color-blue);
+  border-radius: var(--radius-sm);
+  color: var(--color-red);
+  backface-visibility: hidden;
+}
+
+.pillar-cube-face-alt {
+  background: var(--color-blue);
+  border-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+.pillar-cube-face-front  { transform: translateZ(var(--cube-half)); }
+.pillar-cube-face-back   { transform: rotateY(180deg) translateZ(var(--cube-half)); }
+.pillar-cube-face-right  { transform: rotateY(90deg) translateZ(var(--cube-half)); }
+.pillar-cube-face-left   { transform: rotateY(-90deg) translateZ(var(--cube-half)); }
+.pillar-cube-face-top    { transform: rotateX(90deg) translateZ(var(--cube-half)); }
+.pillar-cube-face-bottom { transform: rotateX(-90deg) translateZ(var(--cube-half)); }
+
+.pillar-cube-icon {
+  width: 42%;
+  height: 42%;
+}
+
+.pillar-cube-label {
+  font-family: var(--font-head);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pillar-cube-label-alt {
+  padding: 0 0.4rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillar-cube { transition: none; }
+}
+
+/* ---- Tablet ---- */
+@media (min-width: 768px) {
+  .pillar-cube-scene { --cube-size: 6.5rem; }
+  .pillar-cube-label { font-size: var(--text-sm); }
+}
+
+/* ---- Desktop ---- */
+@media (min-width: 1024px) {
+  .pillar-cube-scene { --cube-size: 7.5rem; }
+  .pillar-cube-face { border-width: 3px; }
+  .pillar-cube-label-alt { font-size: var(--text-xs); }
+}

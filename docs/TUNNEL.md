@@ -201,3 +201,4 @@ $C logs cloudflared | grep -i trycloudflare
 
 ตรวจว่า `REACT_APP_API_URL` ใน `.env.tunnel` เป็น `/api` (ไม่ใช่
 `http://localhost:9100/api`) ถ้าเพิ่งแก้ ต้อง `$C up -d --build` ใหม่
+   

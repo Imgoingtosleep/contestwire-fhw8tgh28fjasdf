@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal";
 import PillarCard from "../components/PillarCard";
+import PillarCube from "../components/PillarCube";
 import EventCard from "../components/EventCard";
 import RoadStats from "../components/RoadStats";
 import VideoPlayer from "../components/VideoPlayer";
@@ -14,7 +15,29 @@ import site from "../data/site.json";
 import videoThumb from "../assets/images/content/home-video.jpg";
 import "../styles/home.css";
 
+/** ระยะเวลาที่ลูกบาศก์ค้างแต่ละหน้าก่อนหมุนไปเสาหลักถัดไป */
+const CUBE_INTERVAL_MS = 3000;
+
 export default function HomePage() {
+  const [activePillar, setActivePillar] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  // หมุนวนเองเมื่อผู้ใช้ไม่ได้ชี้/โฟกัสอยู่ในส่วน ROAD SAFETY
+  // ผู้ที่ตั้งค่าลดการเคลื่อนไหวไว้จะไม่หมุนเอง (ยังกดการ์ดเพื่อเปลี่ยนหน้าได้)
+  useEffect(() => {
+    if (paused) return undefined;
+    const reduceMotion =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return undefined;
+
+    const count = Math.min(pillars.length, 3);
+    const timer = setInterval(() => {
+      setActivePillar((i) => (i + 1) % count);
+    }, CUBE_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, [paused]);
+
   return (
     <>
       <Hero
@@ -31,9 +54,16 @@ export default function HomePage() {
       <RoadStats />
 
       {/* ---- ROAD SAFETY : การ์ดเกยขอบแถบสถิติ ---- */}
-      <section className="section home-pillars">
+      <section
+        className="section home-pillars"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+      >
         <div className="container">
           <Reveal className="section-head section-head-center">
+            <PillarCube pillars={pillars} activeIndex={activePillar} />
             <h2 className="section-title">ROAD SAFETY</h2>
             <p className="section-subtitle">
               ความปลอดภัยบนท้องถนน เริ่มต้นที่เราทุกคน
@@ -41,8 +71,13 @@ export default function HomePage() {
           </Reveal>
 
           <Reveal className="card-grid">
-            {pillars.map((item) => (
-              <PillarCard key={item.id} item={item} />
+            {pillars.map((item, i) => (
+              <PillarCard
+                key={item.id}
+                item={item}
+                isActive={i === activePillar}
+                onActivate={() => setActivePillar(i)}
+              />
             ))}
           </Reveal>
 
