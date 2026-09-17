@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import Watermark from "./components/Watermark";
 
 import HomePage from "./pages/HomePage";
 import YouthCampPage from "./pages/YouthCampPage";
@@ -18,6 +19,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 export default function App() {
   return (
     <div className="app-shell">
+      <Watermark />
       <a href="#main-content" className="skip-link">
         ข้ามไปยังเนื้อหาหลัก
       </a>
