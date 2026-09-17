@@ -26,6 +26,20 @@
     <link rel="icon" type="image/png" sizes="192x192" href="%PUBLIC_URL%/favicon-192x192.png" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png" />
 
+    <!-- SPA fallback สำหรับ static hosting (GitHub Pages): 404.html เก็บพาธเดิมไว้ใน sessionStorage
+         แล้วส่งกลับมาที่นี่ สคริปต์นี้คืนพาธเดิมให้ React Router ก่อนแอปโหลด -->
+    <script>
+      (function () {
+        try {
+          var redirect = sessionStorage.getItem("spa-redirect");
+          sessionStorage.removeItem("spa-redirect");
+          if (redirect && redirect !== location.href) {
+            history.replaceState(null, "", redirect);
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <title>Toyota Road Safety - Apply for Youth Camp</title>
   </head>
   <body>

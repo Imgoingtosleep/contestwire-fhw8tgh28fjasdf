@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <title>Toyota Road Safety</title>
+    <!-- GitHub Pages ไม่รู้จักเส้นทางของ React Router (เช่น /articles/1) จึงส่งหน้านี้มาแทน
+         เก็บ URL เดิมไว้แล้วกลับไปหน้าแรกของแอป index.html จะคืนค่า URL ให้ -->
+    <script>
+      (function () {
+        var segments = location.pathname.split("/").filter(Boolean);
+        // บน <user>.github.io/<repo>/ ส่วนแรกของพาธคือชื่อ repo
+        var base = location.hostname.endsWith("github.io") && segments.length ? "/" + segments[0] + "/" : "/";
+        try {
+          sessionStorage.setItem("spa-redirect", location.href);
+        } catch (e) {}
+        location.replace(location.origin + base);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

@@ -9,7 +9,13 @@ const newsList = newsContext
   .keys()
   .map((key) => {
     const mod = newsContext(key);
-    return mod.default || mod;
+    const item = mod.default || mod;
+    // พาธรูปที่ขึ้นต้นด้วย "/" อ้างถึงโฟลเดอร์ public/ — เติม PUBLIC_URL
+    // ไม่งั้นรูปหายเมื่อเว็บไม่ได้อยู่ที่ราก (เช่น GitHub Pages)
+    if (item.cover && item.cover.startsWith("/")) {
+      return { ...item, cover: `${process.env.PUBLIC_URL}${item.cover}` };
+    }
+    return item;
   })
   .sort((a, b) => new Date(b.date) - new Date(a.date)); // ใหม่สุดขึ้นก่อน
 

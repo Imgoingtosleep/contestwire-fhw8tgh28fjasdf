@@ -1,0 +1,53 @@
+name: Deploy demo to GitHub Pages
+
+on:
+  push:
+    branches: [gh-pages-demo]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+
+      - name: Build
+        run: npm run build
+        env:
+          # เว็บอยู่ใต้ https://<user>.github.io/<repo>/
+          PUBLIC_URL: /${{ github.event.repository.name }}
+          # demo ไม่มี backend — ปิดฟอร์มส่งผลงาน
+          REACT_APP_CONTEST_OPEN: "false"
+          CI: false
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

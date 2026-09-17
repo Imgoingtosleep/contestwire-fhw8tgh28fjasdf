@@ -7,7 +7,8 @@ import "./styles/global.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    {/* basename มาจาก PUBLIC_URL (ตั้งตอน build) — รองรับเว็บที่อยู่ใต้ path ย่อย เช่น GitHub Pages */}
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <App />
     </BrowserRouter>
   </React.StrictMode>
